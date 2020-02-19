@@ -6,12 +6,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sharkFin</title>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="materialize.min.css">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body>
+    <nav class="nav-extended">
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo">sharkFin</a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger" </a>
+        </div>
+        <div class="nav-content">
+            <ul class="tabs tabs-transparent">
+                <li class="tab"><a href="#test1">Research</a></li>
+                <li class="tab"><a class="active" href="#test2"> Search</a></li>
+                <li class="tab"><a class="active" href="#test2"> Portfolio</a></li>
+                <li class="tab"><a href="#test4">Crypto Currency</a></li>
+                <li class="tab"><a href="#test4">Recent searchs</a></li>
+            </ul>
+        </div>
+    </nav>
 
+
+    <script>
+        var searchForm = $("#searchForm");
+        var searchInput = $("#searchInput");
+        var searchSubmit = $("#searchSubmit");
+
+    </script>
+
+
+    <div class="row">
+        <div class="col s12">
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">textsms</i>
+                    <input type="text" id="autocomplete-input" class="autocomplete searchInput">
+                    <label for="autocomplete-input">Stock Name Here</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.autocomplete');
+            // var instances = M.Autocomplete.init(elems, options);
+        });
+        // // Sort function for sorting autocomplete results
+        // function (a, b, inputString) {
+        //     return a.indexOf(inputString) - b.indexOf(inputString);
+        // }
+    </script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="materialize.min.js"></script>
 </body>
 
 </html>
