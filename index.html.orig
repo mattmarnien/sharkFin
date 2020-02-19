@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>The Materialize Example</title>
+      <meta name = "viewport" content = "width = device-width, initial-scale = 1">      
+      <link rel = "stylesheet"
+         href = "https://fonts.googleapis.com/icon?family=Material+Icons">
+      <link rel = "stylesheet"
+         href = "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+      <script type = "text/javascript" src = "https://code.jquery.com/jquery-2.1.1.min.js">
+      </script>           
+      <script src = "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js">
+      </script>  
+      <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />           
+   </head>
+   
+   <body>
+    <nav class="nav-extended">
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo">sharkFin</a>
+          <a href="#" data-target="mobile-demo" class="sidenav-trigger"</a>
+        </div>
+        <div class="nav-content">
+          <ul class="tabs tabs-transparent">
+            <li class="tab"><a href="#test1">Research</a></li>
+            <li class="tab"><a class="active" href="#test2"> Search</a></li>
+            <li class="tab"><a class="active" href="#test2"> Portfolio</a></li>
+            <li class="tab"><a href="#test4">Crypto Currency</a></li>
+            <li class="tab"><a href="#test4">Recent searchs</a></li>
+          </ul>
+        </div>
+      </nav>
+    
+            
+      
+
+
+   </body>
+</html>
