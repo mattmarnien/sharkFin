@@ -18,17 +18,22 @@
 </head>
 
 <body>
-  
+    <script>
+        var searchForm = $("#searchForm");
+        var searchInput = $("#searchInput");
+        var searchSubmit = $("#searchSubmit");
+        
+    </script>
 
 
     <div class="row">
         <div class="col s12">
             <div class="row">
-                <form class="input-field col s12" id="searchForm">
+                <div class="input-field col s12">
                     <i class="material-icons prefix">textsms</i>
                     <input type="text" id="autocomplete-input" class="autocomplete searchInput">
                     <label for="autocomplete-input">Stock Name Here</label>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -38,10 +43,10 @@
     
 
     <script>
-        // document.addEventListener('DOMContentLoaded', function () {
-        //     var elems = document.querySelectorAll('.autocomplete');
-        //     // var instances = M.Autocomplete.init(elems, options);
-        // });
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.autocomplete');
+            // var instances = M.Autocomplete.init(elems, options);
+        });
         // // Sort function for sorting autocomplete results
         // function (a, b, inputString) {
         //     return a.indexOf(inputString) - b.indexOf(inputString);
@@ -49,7 +54,6 @@
     </script>
     <!-- Compiled and minified JavaScript -->
     <script src="materialize.min.js"></script>
-    <script src="script.js"></script>
 </body>
 
 </html>
