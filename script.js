@@ -9,13 +9,13 @@ var searchSymbol = '';
 var queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + searchSymbol + "&interval=5min&apikey=4EOJKMRS4JOT2AEA";
    
 
-$.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function(response) {
-        console.log(response);
-        generateStockInfo(response);
-    });
+// $.ajax({
+//         url: queryURL,
+//         method: "GET"
+//     }).then(function(response) {
+//         console.log(response);
+//         generateStockInfo(response);
+//     });
 
 
 
@@ -38,16 +38,14 @@ $.ajax({
     // });
 
 
-function generateStockInfo(){
-    console.log(response);
-<<<<<<< Updated upstream
+function generateStockInfo(response){
+    // placeholderDiv.text(response.name);
+    // placeholderDiv.text(response.last);
+    // placeholderDiv.text(response.high);
+    // placeholderDiv.text(response.low);
+    // placeholderDiv.text(response.volume);
+
     
-
-
-
-
-=======
->>>>>>> Stashed changes
 }
 
 // function generateStockNews(){
@@ -55,27 +53,11 @@ function generateStockInfo(){
 
 // }
 
-<<<<<<< Updated upstream
-searchInput.on("submit", function(event){
-    event.preventDefault();
-    searchTerm = searchInput.val();
-    getStockQuery();
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function(response) {
-        console.log(response);
-        generateStockInfo(response);
-    });
-
-    generateStockInfo();
-    generateStockNews();
-=======
 searchForm.on("submit", function(event){
     event.preventDefault();
     searchTerm = searchInput.val();
     console.log(searchTerm);
-    getStockQuery();
+    // getStockQuery();
     // $.ajax({
     //     url: queryURL,
     //     method: "GET"
@@ -86,7 +68,6 @@ searchForm.on("submit", function(event){
 
     // generateStockInfo();
     // generateStockNews();
->>>>>>> Stashed changes
 
 });
 
