@@ -47,7 +47,7 @@
         }
 
 
-    var companyName = "apple";
+    var companyName = "apple inc";
 
     var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + companyName + "&limit=10";
     var dayKeys = [];
@@ -94,7 +94,7 @@
                     closeKeysInt = closeKeys.map(key => parseInt(key));
                     console.log(closeKeysInt);
 
-                    generateGraph(label.reverse(),closeKeysInt.reverse());
+                    generateGraph(dayKeys.reverse(),closeKeysInt.reverse());
 
 
             
@@ -137,7 +137,7 @@
                     var i = 0;
                     label = dayKeys.map(day => i++ );
                     closeKeysInt = closeKeys.map(key => parseInt(key));
-                    generateGraph(label.reverse(),closeKeysInt.reverse());
+                    generateGraph(dayKeys.reverse(),closeKeysInt.reverse());
                 
                 });
     
