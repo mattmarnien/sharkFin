@@ -1,9 +1,9 @@
 var searchForm = $("#searchForm");
 var searchInput = $(".searchInput");
 var searchSubmit = $("#searchSubmit");
+var displayRow = $("#displayRow");
 // var searchSubmit = $("#searchSubmit");
 var searchTerm = '';
-var stockInfo = $("#stockInfo");
 var searchSymbol = '';
 var searchTerm = '';
 var startYear = null;
@@ -17,13 +17,20 @@ queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symb
 
 
 function getInfo(foundSymbol){
-    stockInfo.empty();
+    
     searchSymbol = foundSymbol;
+    
+   
+
     var queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + searchSymbol + "&outputsize=compact&apikey=4EOJKMRS4JOT2AEA";
     $.ajax({
     url: queryURL,
     method: "GET"
 }).then(function(response) {
+    var infoDiv = ("<div id='stockInfo' class='card-panel teal col s4'>");
+    displayRow.append(infoDiv);
+    var stockInfo = $("#stockInfo");
+    stockInfo.empty();
     var newStockName = $("<p>");
     var newStockPrice = $("<p>");
     var newStockHigh = $("<p>");
@@ -52,6 +59,10 @@ function getInfo(foundSymbol){
 searchForm.on("submit", function(event){
     event.preventDefault();
     searchTerm = searchInput.val();    
+    
+    // infoDiv.attr("id", "stockInfo");
+    // infoDiv.attr("class", "card-panel teal");
+    
 
     var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";
     
@@ -99,6 +110,7 @@ searchForm.on("submit", function(event){
                 symbol = $(this).val();
                 console.log(symbol);
                 getInfo(symbol);
+                optionsDiv.empty();
                 // queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=5min&apikey=4EOJKMRS4JOT2AEA";
         
                 // $.ajax({
