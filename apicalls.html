@@ -37,13 +37,14 @@
            optionsDiv.append(p);
         }else if(response.length === 1){ //Only one company was returned
            symbol = response[0].symbol;
-           queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=5min&apikey=4EOJKMRS4JOT2AEA";
+           queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + symbol + "&outputsize=compact&apikey=4EOJKMRS4JOT2AEA";
         
             $.ajax({
                 url: queryURL,
                 method: "GET"
              }).then(function(response) {
                     console.log(response);
+                 
              });
 
         } else{ //multiple companies returned
@@ -64,13 +65,14 @@
                 event.preventDefault();
                 symbol = $("#company-select").val();
                 console.log(symbol);
-                queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=5min&apikey=4EOJKMRS4JOT2AEA";
+                queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + symbol + "&outputsize=compact&apikey=4EOJKMRS4JOT2AEA";
         
                 $.ajax({
                     url: queryURL,
                     method: "GET"
                 }).then(function(response) {
                     console.log(response);
+                    
                 });
         
             })
