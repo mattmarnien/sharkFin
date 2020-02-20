@@ -1,15 +1,31 @@
-// Upon clicking "add to portfolio" button
-// Stock name and information from API is stored in local storage
-// Upon clicking into Portfolio page - local storage data is displayed in table form
 
+portfolio.addEventListener("addPortSubmit", function(event) {
+    event.preventDefault();
+    var stocks = stockInfo.value;
+    var newStocks = [];
+    var savedStocks = JSON.parse(localStorage.getItem("stock"));
+    if (savedStocks !== null) {
+        newStocks = savedStocks;
+    }
 
-var stockInput = document.querySelector("#stock-name");
-
-
-var portfolio = {
-    
-}
-fucntion submitPortfolio() {
+    var newStocksObj = {
+        Name: newStockName.text(),
+        Price: newStockPrice.text(),
+        Quantity: newStockQuantity.val()
     
     }
+        console.log(newStocksObj);
+
+    newStocks.push(newStocksObj);
+    // console.log(newStocks);
+    var stockArr = JSON.stringify(newStocks);
+
+    localStorage.setItem("stock", stockArr);
+    // location.href="portfolio.html"
+
+})
+
+
+
+
 
