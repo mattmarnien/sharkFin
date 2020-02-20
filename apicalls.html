@@ -63,7 +63,7 @@
             btn.on("click",function(event){
                 event.preventDefault();
                 symbol = $("#company-select").val();
-                //console.log(symbol);
+                console.log(symbol);
                 queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=5min&apikey=4EOJKMRS4JOT2AEA";
         
                 $.ajax({
@@ -76,7 +76,7 @@
             })
         }
         
-        console.log(symbol);
+        
         
     });
     
