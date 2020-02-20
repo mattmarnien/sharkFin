@@ -14,16 +14,16 @@ queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symb
 
 
 
-var queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&outputsize=compact&apikey=4EOJKMRS4JOT2AEA";
 
 
-function getInfo(){
+function getInfo(foundSymbol){
+    stockInfo.empty();
+    searchSymbol = foundSymbol;
+    var queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + searchSymbol + "&outputsize=compact&apikey=4EOJKMRS4JOT2AEA";
     $.ajax({
     url: queryURL,
     method: "GET"
 }).then(function(response) {
-    // return(response);
-    console.log(response);
     var newStockName = $("<p>");
     var newStockPrice = $("<p>");
     var newStockHigh = $("<p>");
@@ -31,8 +31,6 @@ function getInfo(){
     var newStockVol = $("<p>");
     newStockName.text(response["Meta Data"]["2. Symbol"]);
     stockInfo.append(newStockName);
-    // var lastRefreshed = response["Meta Data"]["Last Refreshed"];
-    // console.log(lastRefreshed);
     var firstKey = response["Time Series (Daily)"][Object.keys(response["Time Series (Daily)"])[0]];
     console.log(firstKey);
     newStockPrice.text(firstKey["1. open"]);
@@ -53,17 +51,74 @@ function getInfo(){
 
 searchForm.on("submit", function(event){
     event.preventDefault();
-    searchTerm = searchInput.val();
+    searchTerm = searchInput.val();    
+
     var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";
+    
     $.ajax({
         url: symbolQueryURL,
         method: "GET"
     }).then(function(response) {
-        console.log(response);
+        var symbol ='';
+        var optionsDiv = $("<div id='company-options'>");
+       searchForm.append(optionsDiv)
+        //No response from api
+        if(response.length === 0){
+           var p = $("<p>");
+           p.text("No results ...");
+           optionsDiv.append(p);
+        }else if(response.length === 1){ //Only one company was returned
+           symbol = response[0].symbol;
+           getInfo(symbol);
+        //    queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=5min&apikey=4EOJKMRS4JOT2AEA";
+        
+        //     $.ajax({
+        //         url: queryURL,
+        //         method: "GET"
+        //      }).then(function(response) {
+        //             console.log(response);
+        //      });
+
+        } else{ //multiple companies returned
+
+            
+            for(var i = 0; i < response.length; i++){
+                console.log("in the for loop")
+                console.log(response);
+                var newButton = $("<button class='choiceBtn'>");
+                console.log(response[i].name);
+                var name = response[i].name;
+                newButton.text(name);
+                newButton.attr("value",response[i].symbol);
+                optionsDiv.append(newButton);
+                
+            }
+            choices = $(".choiceBtn");
+            choices.on("click",function(event){
+                event.preventDefault();
+                symbol = $(this).val();
+                console.log(symbol);
+                getInfo(symbol);
+                // queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=5min&apikey=4EOJKMRS4JOT2AEA";
+        
+                // $.ajax({
+                //     url: queryURL,
+                //     method: "GET"
+                // }).then(function(response) {
+                //     console.log(response);
+                // });
+        
+            })
+        
+        }
+        // getInfo(symbol);
+        
+        
+        
     });
 
-    newsQueryURL = getNewsQuery();
-    search();
+    // newsQueryURL = getNewsQuery();
+    // search();
     
     // console.log(searchSymbol);
     // queryURL = getQuery();
