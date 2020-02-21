@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sharkFin</title>
+    <title><strong>sharkFin</strong></title>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -15,6 +18,7 @@
 
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -27,15 +31,18 @@
         <div class="nav-content">
             <ul class="tabs tabs-transparent">
                 <li class="tab"><a href="#test1">Research</a></li>
-                <li class="tab"><a class="active" href="#test2"> Search</a></li>
-                <li class="tab"><a class="active" href="portfolio.html"> Portfolio</a></li>
 
-                <li class="tab"><a href="#test4">Cryptocurrency</a></li>
-                <li class="tab"><a href="#test4">Recent Searches</a></li>
+                <li class="tab"><a class="active bigger-text" href="#test2"> Search</a></li>
+                <li class="tab"><a class="active" href="#test2"> Portfolio</a></li>
+
+
+                <li class="tab"><a class="active" href="#test4">Cryptocurrency</a></li>
+                <li class="tab"><a class="active" href="#test4">Recent Searches</a></li>
 
             </ul>
         </div>
     </nav>
+
 
     <div class="container">
         <div class="row">
@@ -45,7 +52,8 @@
                         <i class="material-icons prefix">textsms</i>
                         <input type="text" id="autocomplete-input" class="autocomplete searchInput">
                         <label for="autocomplete-input">Stock Name Here</label>
-                        <a class="waves-effect waves-light btn"><i class="material-icons left" id="searchSubmit">cloud</i>Search</a>
+
+                        <a class="waves-effect waves-light btn color blue"><i class="material-icons left" id="searchSubmit">cloud</i>Search</a>
                         
                         </button>
                     </form>
@@ -76,9 +84,10 @@
 
 
 
-  
-                <!-- <div class="col s8 ">
-                    <div class="card-panel teal stockNews">
+
+                <div class="col s8 ">
+                    <div class="card-panel blue stockNews">
+
                         <span class="white-text">I am a very simple card. I am good at containing small bits of
                             information.
                             I am convenient because I require little markup to use effectively. I am similar to what is
