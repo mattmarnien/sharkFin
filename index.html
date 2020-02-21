@@ -20,15 +20,15 @@
 <body>
     <nav class="nav-extended blue lighten-1">
         <div class="nav-wrapper center-align section">
-            <a href="#" class="brand-logo center-align">sharkFin</a>
-            <img src="images/shark.png" class="responsive-image center-align" width="100" height="100">
+            <a href="#" class="brand-logo">sharkFin</a>
+            <img src="images/shark.png" class="responsive-image " width="100" height="100">
             <a href="#" data-target="mobile-demo" class="sidenav-trigger" </a>
         </div>
         <div class="nav-content">
             <ul class="tabs tabs-transparent">
                 <li class="tab"><a href="#test1">Research</a></li>
                 <li class="tab"><a class="active" href="#test2"> Search</a></li>
-                <li class="tab"><a class="active" href="#test2"> Portfolio</a></li>
+                <li class="tab"><a class="active" href="portfolio.html"> Portfolio</a></li>
 
                 <li class="tab"><a href="#test4">Cryptocurrency</a></li>
                 <li class="tab"><a href="#test4">Recent Searches</a></li>
@@ -36,17 +36,6 @@
             </ul>
         </div>
     </nav>
-
-
-    <script>
-        var searchForm = $("#searchForm");
-        var searchInput = $("#searchInput");
-        var searchSubmit = $("#searchSubmit");
-        var addPortSubmit = $("#addPortSubmit");
-        var stockInfo = $("stockInfo");
-        var stockNews = $("stockNews");
-
-    </script>
 
     <div class="container">
         <div class="row">
@@ -57,29 +46,38 @@
                         <input type="text" id="autocomplete-input" class="autocomplete searchInput">
                         <label for="autocomplete-input">Stock Name Here</label>
                         <a class="waves-effect waves-light btn"><i class="material-icons left" id="searchSubmit">cloud</i>Search</a>
-                        <button class="btn waves-effect waves-light" id="addPortSubmit" type="submit" name="action">Add to Portfolio
-                            <i class="material-icons right">send</i>
+                        
                         </button>
                     </form>
                 </div>
             </div>
         </div>
+        <div class="row" id="displayRow">
+
+        </div>
+
+        <div class="row">
+            <form class="col s12" id="stockCount">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="stockNumber" type="stock#" class="validate">
+                        <label for="stock#"># of Stocks to Add</label>
+                        <button class="btn waves-effect waves-light" id="addPortSubmit" type="submit" name="action">Add to Portfolio
+                            <i class="material-icons right">send</i>
+                        <span class="helper-text" data-error="Wrong, must enter a number between 0-10000"
+                            data-success="right">Thank You</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    
 
         <br>
 
 
 
-    <!-- 2 Containers for stock info and NYT articles -->
-    <div style="text-align: center;">
-        <div class="row">
-            <div class="col s4">
-                <div class="card-panel teal stockInfo" id="stockInfo">
-                    <span class="white-text">
-                    </span>
-
-                </div>
-
-                <div class="col s8 ">
+  
+                <!-- <div class="col s8 ">
                     <div class="card-panel teal stockNews">
                         <span class="white-text">I am a very simple card. I am good at containing small bits of
                             information.
@@ -88,9 +86,9 @@
                             panel in other frameworks.
                         </span>
                     </div>
-                </div>
-            </div>
-        </div>
+                </div> -->
+            <!-- </div>
+        </div> -->
     </div>
 
     <script>
