@@ -68,6 +68,7 @@ searchForm.on("submit", function(event){
         }else if(response.length === 1){ 
            symbol = response[0].symbol;
            getInfo(symbol);
+           searchNYT();
         } else{
              //multiple companies returned            
            for(var i = 0; i < response.length; i++){
@@ -75,7 +76,8 @@ searchForm.on("submit", function(event){
                 var name = response[i].name;
                 newButton.text(name);
                 newButton.attr("value",response[i].symbol);
-                optionsDiv.append(newButton);                
+                optionsDiv.append(newButton);       
+                       
             }
             choices = $(".choiceBtn");
             choices.on("click",function(event){
@@ -83,6 +85,7 @@ searchForm.on("submit", function(event){
                 symbol = $(this).val();
                 getInfo(symbol);
                 optionsDiv.empty();        
+                searchNYT();
             })
        }        
     }); 
@@ -93,29 +96,103 @@ var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key
 
 function getNewsQuery() {
     if (startYear !== null && endYear !== null) {
-        queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=" + startYear + "0101&end_date=" + endYear + "1231&q=" + searchTerm + "&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
+        queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=" + startYear + "0101&end_date=" + endYear + "1231&q=" + searchTerm + "&fq=news_desk:Business&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
     
     }
 
     else if (startYear === null && endYear !== null) {
-        queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=19000101&end_date=" + endYear + "1231&q=" + searchTerm + "&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
+        queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=19000101&end_date=" + endYear + "1231&q=" + searchTerm + "&fq=news_desk:Business&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
     }
     else if(startYear !== null && endYear === null) {
-        queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=" + startYear + "0101&end_date=20201231&q=" + searchTerm + "&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
+        queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=" + startYear + "0101&end_date=20201231&q=" + searchTerm + "&fq=news_desk:Business&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
     }
     else {
-        queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + searchTerm + "&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
+        queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + searchTerm + "&fq=news_desk:Business&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
 
     }
     return queryURL;
 }
+function updatePage(NYTData) {
+    // Get from the form # of results to display
+    // Create limit parameter for API
+    var numArticles = NYTData.response.docs.length;
 
-function search(){
+    // Log NYTData to console
+    console.log(NYTData);
+    console.log("-----------------------");
+
+    // Loop through and build elements for defined number of articles
+    for (var i = 0; i < numArticles; i++) {
+
+        // Get specific article info for current index
+        var article = NYTData.response.docs[i];
+
+        // Create list group to contain articles and add article content
+        var stockNews = $("<ul>");
+        stockNews.addClass("list-group");
+
+        // Add newly created element to DOM
+        $(".stockNews").append(stockNews);
+
+        // Log and append headline to $articleList
+        var headline = article.headline;
+        var stockNewsItem = $("<li class='list-group-item articleHeadline'>");
+
+        if (headline && headline.main) {
+            console.log(headline.main);
+            stockNewsItem.append(
+                "<strong> " +
+                "<h5> <span class='label label-primary'>" +
+                (i+1)+". " +
+                "</span>" + headline.main +"</h5>" +
+                "</strong>"
+            );
+        }
+
+        var byline = article.byline;
+
+        if (byline && byline.original) {
+            console.log(byline.original);
+            stockNewsItem.append("<h5>" + byline.original + "</h5>");
+        }
+
+        // Log section, and append to document if exists
+        var section = article.section_name;
+        console.log(article.section_name);
+        if (section) {
+            stockNewsItem.append("<h5>Section: " + section + "</h5>");
+        }
+
+        // Log published date, and append to document if exists
+        var pubDate = article.pub_date;
+        console.log(article.pub_date);
+        if (pubDate) {
+            stockNewsItem.append("<h5>" + article.pub_date.substring(0,10) + "</h5>");
+        }
+
+        // Append and log url
+        var a = document.createElement("a");
+        a.setAttribute("href",article.web_url);
+        a.textContent= article.web_url;
+        var articleUrl = "<a href='" + article.web_url + "'>" + article.web_url + "</a>";
+        console.log(a);
+        stockNewsItem.append(a);
+        console.log(stockNewsItem);
+
+        // Append the article
+        stockNews.append(stockNewsItem);
+    
+
+    }
+}
+function searchNYT(){
+    var newsQueryURL = getNewsQuery();
     $.ajax({
         url: newsQueryURL,
         method : "GET"
     }).then(function(response){
         console.log(response)
+        updatePage(response);
         // for(i = 0; i < articleNum; i++) {
         //     let div = document.createElement("div");
         //     let headline = document.createElement("p");
