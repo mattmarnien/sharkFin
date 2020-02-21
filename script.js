@@ -2,32 +2,28 @@ var searchForm = $("#searchForm");
 var searchInput = $(".searchInput");
 var searchSubmit = $("#searchSubmit");
 var displayRow = $("#displayRow");
-// var searchSubmit = $("#searchSubmit");
+var optionsDiv = $("<div id='company-options'>");
+       
 var searchTerm = '';
 var searchSymbol = '';
+var searchPrice = 0;
 var searchTerm = '';
 var startYear = null;
 var endYear = null;
 queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=4EOJKMRS4JOT2AEA";
 
-
-
-
-
-
+searchForm.append(optionsDiv)
 
 function getInfo(foundSymbol){
     
     searchSymbol = foundSymbol;
-    
-   
-
     var queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + searchSymbol + "&outputsize=compact&apikey=4EOJKMRS4JOT2AEA";
+
     $.ajax({
     url: queryURL,
     method: "GET"
 }).then(function(response) {
-    var infoDiv = ("<div id='stockInfo' class='card-panel teal col s4'>");
+    var infoDiv = ("<div id='stockInfo' class='card-panel teal col s4 white-text'>");
     displayRow.append(infoDiv);
     var stockInfo = $("#stockInfo");
     stockInfo.empty();
@@ -39,8 +35,8 @@ function getInfo(foundSymbol){
     newStockName.text(response["Meta Data"]["2. Symbol"]);
     stockInfo.append(newStockName);
     var firstKey = response["Time Series (Daily)"][Object.keys(response["Time Series (Daily)"])[0]];
-    console.log(firstKey);
     newStockPrice.text(firstKey["1. open"]);
+    searchPrice = firstKey["1. open"];
     stockInfo.append(newStockPrice);
     newStockHigh.text(firstKey["2. high"]);
     stockInfo.append(newStockHigh);
@@ -49,118 +45,49 @@ function getInfo(foundSymbol){
     newStockVol.text(firstKey["5. volume"]);
     stockInfo.append(newStockVol);
 });
-
 }
-
-
-
-
 
 searchForm.on("submit", function(event){
     event.preventDefault();
-    searchTerm = searchInput.val();    
-    
-    // infoDiv.attr("id", "stockInfo");
-    // infoDiv.attr("class", "card-panel teal");
-    
-
-    var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";
-    
+    searchTerm = searchInput.val();
+    displayRow.empty(); 
+    optionsDiv.empty();
+    var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";    
     $.ajax({
         url: symbolQueryURL,
         method: "GET"
     }).then(function(response) {
         var symbol ='';
-        var optionsDiv = $("<div id='company-options'>");
-       searchForm.append(optionsDiv)
+
         //No response from api
         if(response.length === 0){
            var p = $("<p>");
            p.text("No results ...");
            optionsDiv.append(p);
-        }else if(response.length === 1){ //Only one company was returned
+           //Only one company was returned
+        }else if(response.length === 1){ 
            symbol = response[0].symbol;
            getInfo(symbol);
-        //    queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=5min&apikey=4EOJKMRS4JOT2AEA";
-        
-        //     $.ajax({
-        //         url: queryURL,
-        //         method: "GET"
-        //      }).then(function(response) {
-        //             console.log(response);
-        //      });
-
-        } else{ //multiple companies returned
-
-            
-            for(var i = 0; i < response.length; i++){
-                console.log("in the for loop")
-                console.log(response);
+        } else{
+             //multiple companies returned            
+           for(var i = 0; i < response.length; i++){
                 var newButton = $("<button class='choiceBtn'>");
-                console.log(response[i].name);
                 var name = response[i].name;
                 newButton.text(name);
                 newButton.attr("value",response[i].symbol);
-                optionsDiv.append(newButton);
-                
+                optionsDiv.append(newButton);                
             }
             choices = $(".choiceBtn");
             choices.on("click",function(event){
                 event.preventDefault();
                 symbol = $(this).val();
-                console.log(symbol);
                 getInfo(symbol);
-                optionsDiv.empty();
-                // queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + symbol + "&interval=5min&apikey=4EOJKMRS4JOT2AEA";
-        
-                // $.ajax({
-                //     url: queryURL,
-                //     method: "GET"
-                // }).then(function(response) {
-                //     console.log(response);
-                // });
-        
+                optionsDiv.empty();        
             })
-        
-        }
-        // getInfo(symbol);
-        
-        
-        
-    });
-
-    // newsQueryURL = getNewsQuery();
-    // search();
-    
-    // console.log(searchSymbol);
-    // queryURL = getQuery();
-
-    // var stockInfo = getInfo();
-    // console.log(stockInfo);
-    // $.ajax({
-    //     url: queryURL,
-    //     method: "GET"
-    // }).then(function(response) {
-    //     console.log(response);
-        
-    // });
- 
+       }        
+    }); 
 });
-
-
-
-// Add Script for portfolio page
-
-
-
-
 // NYT News Search Code
-
-
-
-
-
-
 var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
 
 
@@ -210,3 +137,56 @@ function search(){
             // displayArticles.appendChild(div);
         })
 }
+
+/////////////
+//Portfolio Add Button/Form
+//////
+
+var toPortButton = $("#addPortSubmit");
+var stockNumInput = $("#stockNumber");
+var stockNumForm = $("stockCount");
+
+function addtoPortfolio(){
+    let newStockCount = stockNumInput.val();
+    var newStock = searchSymbol;
+    var newStockPrice = searchPrice;
+
+    var newStocks = [];
+    var savedStocks = JSON.parse(localStorage.getItem("stock"));
+if (savedStocks !== null) {
+newStocks = savedStocks;
+}
+
+var newStocksObj = {
+Name: searchSymbol,
+Price: searchPrice,
+Quantity: newStockCount,
+}
+console.log(newStocksObj);
+
+newStocks.push(newStocksObj);
+// console.log(newStocks);
+var stockArr = JSON.stringify(newStocks);
+
+localStorage.setItem("stock", stockArr);
+}
+
+stockNumForm.on("submit", function(event){
+    event.preventDefault();
+    addtoPortfolio();
+})
+
+toPortButton.on("click", function (event) {
+    event.preventDefault();
+    console.log(searchSymbol);
+    console.log(searchPrice);
+    addtoPortfolio();   
+})
+
+/////////
+//Portfolio Values
+/////
+var portfolioStart = 1000000;
+var portfolioValue = 1000000;
+var portfolioReturn = portfolioValue/portfolioStart;
+
