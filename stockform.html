@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title># of Stocks Form</title>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="materialize.min.css">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<!-- Materialize JS and CSS -->
+
+
+<!--One form input box - on stockform.html -> transfer to index.html?
+Move "add to portfolio" button to under displayed stock info ***on index.html*** -->
+
+<body>
+
+    <div class="row">
+        <form class="col s12" id="stockCount">
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="stock#" type="stock#" class="validate">
+                    <label for="stock#"># of Stocks to Add</label>
+                    <span class="helper-text" data-error="Wrong, must enter a number between 0-10000"
+                        data-success="right">Thank You</span>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        button.on("click", function (event) {
+            event.preventDefault();
+            let stockCount = $("#stockCount").val();
+
+    var stocks = stockInfo.value;
+
+    var newStocks = [];
+    var savedStocks = JSON.parse(localStorage.getItem("stock"));
+    if (savedStocks !== null) {
+        newStocks = savedStocks;
+    }
+
+    var newStocksObj = {
+        Name: newStockName.text(),
+        Price: newStockPrice.text(),
+        Quantity: stockCount
+    }
+        console.log(newStocksObj);
+
+    newStocks.push(newStocksObj);
+    // console.log(newStocks);
+    var stockArr = JSON.stringify(newStocks);
+
+    localStorage.setItem("stock", stockArr);
+    // location.href="portfolio.html"
+
+            // form.addEventListener("submit", logSubmit)
+            // $(logSubmit).val(value)
+        })
+
+    </script>
+    <script src="materialize.min.js"></script>
+    <script src="portfolioFunct.js"></script>
+</body>
+
+</html>
