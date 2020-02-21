@@ -158,9 +158,9 @@ newStocks = savedStocks;
 }
 
 var newStocksObj = {
-Name: searchSymbol,
-Price: searchPrice,
-Quantity: newStockCount,
+name: searchSymbol,
+price: searchPrice,
+quantity: newStockCount,
 }
 console.log(newStocksObj);
 
