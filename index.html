@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><strong>sharkFin</strong></title>
+    <title>sharkFin</title>
 
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -26,18 +26,18 @@
         <div class="nav-wrapper center-align section">
             <a href="#" class="brand-logo">sharkFin</a>
             <img src="images/shark.png" class="responsive-image " width="100" height="100">
-            <a href="#" data-target="mobile-demo" class="sidenav-trigger" </a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"> </a>
         </div>
         <div class="nav-content">
             <ul class="tabs tabs-transparent">
                 <li class="tab"><a href="#test1">Research</a></li>
 
                 <li class="tab"><a class="active bigger-text" href="#test2"> Search</a></li>
-                <li class="tab"><a class="active" href="#test2"> Portfolio</a></li>
+                <li class="tab"><a class="active" href="portfolio.html"> Portfolio</a></li>
 
-
+<!-- 
                 <li class="tab"><a class="active" href="#test4">Cryptocurrency</a></li>
-                <li class="tab"><a class="active" href="#test4">Recent Searches</a></li>
+                <li class="tab"><a class="active" href="#test4">Recent Searches</a></li> -->
 
             </ul>
         </div>
@@ -53,7 +53,10 @@
                         <input type="text" id="autocomplete-input" class="autocomplete searchInput">
                         <label for="autocomplete-input">Stock Name Here</label>
 
-                        <a class="waves-effect waves-light btn color blue"><i class="material-icons left" id="searchSubmit">cloud</i>Search</a>
+                        <button class="waves-effect waves-light btn color blue" data-target="modal1"><i class="material-icons left" id="searchButton">cloud</i>Search</button>
+                        <div id="optionsDiv">
+
+                        </div>
                         
                         </button>
                     </form>
@@ -64,13 +67,34 @@
 
         </div>
 
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <div >
+      <h4>Modal Header</h4>
+      <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+  </div>
+
+  <div id="modal2" class="modal">
+    <div class="modal-content">
+      <h4>Modal Header</h4>
+      <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+  </div>
+
         <div class="row">
             <form class="col s12" id="stockCount">
                 <div class="row">
                     <div class="input-field col s12">
-                        <input id="stockNumber" type="stock#" class="validate" placeholder="Number of stocks to Add">
-                        <!-- <label for="stock#"># of Stocks to Add</label> -->
-                        <button class="btn waves-effect waves-light" id="addPortSubmit" type="submit" name="action">Add to Portfolio
+                        <input id="stockNumber" type="stock#" class="validate" placeholder="Number of shares to Add">
+                   
+                        <button class="btn waves-effect blue lighten-2" id="addPortSubmit" type="submit" name="action">Add to Portfolio
                             <i class="material-icons right">send</i>
                         <span class="helper-text" data-error="Wrong, must enter a number between 0-10000"
                             data-success="right">Thank You</span>
@@ -95,24 +119,19 @@
                             panel in other frameworks.
                         </span>
                     </div>
-                </div> -->
+                </div>
             <!-- </div>
         </div> -->
     </div>
 
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var elems = document.querySelectorAll('.autocomplete');
-            // var instances = M.Autocomplete.init(elems, options);
-        });
-        // // Sort function for sorting autocomplete results
-        // function (a, b, inputString) {
-        //     return a.indexOf(inputString) - b.indexOf(inputString);
-        // }
-    </script> -->
+  
     <!-- Compiled and minified JavaScript -->
     <script src="materialize.min.js"></script>
     <script src="script.js"></script>
+    <script>
+   
+    
+    </script>
 </body>
 
 </html>

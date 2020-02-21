@@ -3,7 +3,9 @@ var searchInput = $(".searchInput");
 var searchSubmit = $("#searchSubmit");
 var displayRow = $("#displayRow");
 var optionsDiv = $("<div id='company-options'>");
-       
+var searchButton = $("#searchButton");
+var optionsDiv = $("#optionsDiv");
+var modal1 = $("#modal1");
 var searchTerm = '';
 var searchSymbol = '';
 var searchPrice = 0;
@@ -12,7 +14,8 @@ var startYear = null;
 var endYear = null;
 queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=4EOJKMRS4JOT2AEA";
 
-searchForm.append(optionsDiv)
+
+
 
 function getInfo(foundSymbol){
     
@@ -23,7 +26,7 @@ function getInfo(foundSymbol){
     url: queryURL,
     method: "GET"
 }).then(function(response) {
-    var infoDiv = ("<div id='stockInfo' class='card-panel teal col s4 white-text'>");
+    var infoDiv = ("<div id='stockInfo' class='card-panel blue lighten-1 col s4 white-text'>");
     displayRow.append(infoDiv);
     var stockInfo = $("#stockInfo");
     stockInfo.empty();
@@ -70,7 +73,55 @@ searchForm.on("submit", function(event){
            getInfo(symbol);
         } else{
              //multiple companies returned            
+           for(var i = 0; i < response.length && i < 5; i++){
+                var newButton = $("<button class='choiceBtn btn blue'>");
+                var name = response[i].name;
+                newButton.text(name);
+                newButton.attr("value",response[i].symbol);
+                optionsDiv.append(newButton);                
+            }
+            choices = $(".choiceBtn");
+            choices.on("click",function(event){
+                event.preventDefault();
+                symbol = $(this).val();
+                getInfo(symbol);
+                optionsDiv.empty();        
+            })
+            
+               
+            
+
+        
+       }        
+    }); 
+});
+
+searchButton.on("click", function(event){
+    console.log("clicked")
+    searchTerm = searchInput.val();
+    displayRow.empty(); 
+    optionsDiv.empty();
+    var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";    
+    $.ajax({
+        url: symbolQueryURL,
+        method: "GET"
+    }).then(function(response) {
+        var symbol ='';
+
+        //No response from api
+        if(response.length === 0){
+           var p = $("<p>");
+           p.text("No results ...");
+           optionsDiv.append(p);
+           //Only one company was returned
+        }else if(response.length === 1){ 
+           symbol = response[0].symbol;
+           getInfo(symbol);
+        } else{
+            console.log("in the else")
+             //multiple companies returned            
            for(var i = 0; i < response.length; i++){
+               console.log("makin buttons");
                 var newButton = $("<button class='choiceBtn'>");
                 var name = response[i].name;
                 newButton.text(name);
@@ -84,8 +135,10 @@ searchForm.on("submit", function(event){
                 getInfo(symbol);
                 optionsDiv.empty();        
             })
+            // $("#modal1").modal(open);
        }        
     }); 
+
 });
 // NYT News Search Code
 var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
@@ -148,8 +201,6 @@ var stockNumForm = $("stockCount");
 
 function addtoPortfolio(){
     let newStockCount = stockNumInput.val();
-    var newStock = searchSymbol;
-    var newStockPrice = searchPrice;
 
     var newStocks = [];
     var savedStocks = JSON.parse(localStorage.getItem("stock"));
@@ -182,6 +233,9 @@ toPortButton.on("click", function (event) {
     console.log(searchPrice);
     addtoPortfolio();   
 })
+
+// $('.modal').modal();
+
 
 /////////
 //Portfolio Values
