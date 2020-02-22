@@ -387,10 +387,17 @@ function addtoPortfolio() {
 var portfolioDisplayDiv = $("#portfolioDisplayDiv");
 var portTotal = 0;
 
-function generatePortfolio(){
-    let newRow = $("<div class='row m-0'>");
-    portfolioDisplayDiv.append(newRow);
+function generatePortfolio(){  
     var portfolioArr = JSON.parse(localStorage.getItem("stock"));
+    let newRow = $("<div class='row m-0'>");
+if (portfolioArr !== null){
+      for (i=0; i < portfolioArr.length; i++){
+          let priceToRound = 0;
+
+    if (i === 0){
+    
+    portfolioDisplayDiv.append(newRow);
+    
     let nameDiv = $("<div class='card col s4'>");
     let nameh4 = $("<h4>");
     let quantityDiv = $("<div class='card col s4'>");
@@ -405,35 +412,21 @@ function generatePortfolio(){
     nameDiv.append(nameh4);
     quantityDiv.append(quantityh4);
     valueDiv.append(valueh4);
-    console.log(portfolioArr)
-
-if (portfolioArr !== null){
-      for (i=0; i < portfolioArr.length; i++){
-          let priceToRound = 0;
-        let queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + portfolioArr[i].name + "&outputsize=compact&apikey=4EOJKMRS4JOT2AEA";
-
-    //     $.ajax({
-    //         url: queryURL,
-    //         method: "GET"
-    //     }).then(function (response) {
-    //         console.log(response);
-    // let firstKey = response["Time Series (Daily)"][Object.keys(response["Time Series (Daily)"])[0]];
-    // priceToRound = parseInt(firstKey["1. open"]);
-    //     })
-    
-    let nameDiv = $("<div class='card col s4'>");
+    }
+    let subRow = $("<div class='row stockSelect'>");
+    let nameDiv = $("<div class='card col s4 name'>");
     let nameh4 = $("<h4>");
     let quantityDiv = $("<div class='card col s4'>");
     let quantityh4 = $("<h4>");
-    let valueDiv = $("<div class='card col s4'>");
-    let valueh4 = $("<h4>");
+    let valueDiv = $("<div class='card col s4 price'>");
+    let valueh4 = $("<h4>");    
     nameh4.text(portfolioArr[i].name);
     quantityh4.text(portfolioArr[i].quantity);
-    priceToRound = parseInt(portfolioArr[i].price);
+    priceToRound = parseFloat(portfolioArr[i].price);
     let roundPrice= priceToRound.toFixed(2);
-    valueh4.text(roundPrice);
-   
-    newRow.append(nameDiv, quantityDiv, valueDiv);
+    valueh4.text(roundPrice);    
+    newRow.append(subRow);
+    subRow.append(nameDiv, quantityDiv, valueDiv);
     nameDiv.append(nameh4);
     quantityDiv.append(quantityh4);
     valueDiv.append(valueh4);
@@ -455,8 +448,65 @@ if (portfolioArr !== null){
     }
 }
 
+$(document).on("click", ".stockSelect", function() {
+    $(".removable").remove();
+    let sellDiv = $("<div class=' row removable'>");
+    let updateButton = $("<button class='btn-large green' id='updateButton'>");
+    updateButton.text("Update")
+    let sellButton = $("<button class='btn-large green lighten-2 modal-trigger' data-target='modalSell' id='sellButton'>")
+    sellButton.text("Sell");
+    $(this).append(sellDiv);
+    sellDiv.append(updateButton, sellButton);
+})
 
+$(document).on("click", "#updateButton", function() {
+    let portfolioArr = JSON.parse(localStorage.getItem("stock"));
+   
+    let updateName = $(this).parent().siblings(".name").text();
+   var updatePrice = $(this).parent().siblings(".price");
+   let updateDiv = $(this)
+    let newRoundPrice =0;
+
+    let queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + updateName + "&outputsize=compact&apikey=4EOJKMRS4JOT2AEA";
+
+    $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function (response) {
+                console.log(response);
+        let firstKey = response["Time Series (Daily)"][Object.keys(response["Time Series (Daily)"])[0]];
+
+        let newPriceToRound = parseFloat(firstKey["1. open"]);
+        newRoundPrice = newPriceToRound.toFixed(2);
+        // updatePrice.text(newRoundPrice);
+        // updatePrice.addClass("h4");
+        // updateDiv.empty();
+                for (i=0; i<portfolioArr.length; i++){                    
+                        if (updateName === portfolioArr[i].name){
+                            console.log("updating holdings")
+                            portfolioArr[i].price = newRoundPrice;                                                
+                        }
+        
+            }
+    $("#portfolioDisplayDiv").empty();
+   generatePortfolio();
+           
+})
+})
+
+
+$(document).on("click", "#sellButton", function(event) {
+    $(document).ready( function(){
+    event.preventDefault();
+    let portfolioArr = JSON.parse(localStorage.getItem("stock"));
+    $("#modalSell").modal('open');
+    })
+    
+})
 
 
 generatePortfolio();
+$(document).ready(function(){
+    $('.modal').modal();
+})
 
