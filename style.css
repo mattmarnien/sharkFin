@@ -5,8 +5,12 @@
 
 .choicebtn {
     margin: 5px;
-{
+}
   
-.articleHeadline a{
+.articleHeadline {
     color: white;
+}
+
+.error {
+    color:  red;
 }
