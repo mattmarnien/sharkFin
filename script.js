@@ -12,135 +12,144 @@ var searchPrice = 0;
 var searchTerm = '';
 var startYear = null;
 var endYear = null;
+var total = 0;
+/////////
+//Portfolio Values
+/////
+// var portfolioStart = 1000000;
+// var portfolioValue = 1000000;
+// var portfolioReturn = portfolioValue/portfolioStart;
+var portfolioCash = 1000000.00;
+
 queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=4EOJKMRS4JOT2AEA";
 
 
 
 
-function getInfo(foundSymbol){
-    
+function getInfo(foundSymbol) {
+
     searchSymbol = foundSymbol;
     var queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + searchSymbol + "&outputsize=compact&apikey=4EOJKMRS4JOT2AEA";
 
     $.ajax({
-    url: queryURL,
-    method: "GET"
-}).then(function(response) {
-    var infoDiv = ("<div id='stockInfo' class='card-panel blue lighten-1 col s4 white-text'>");
-    displayRow.append(infoDiv);
-    var stockInfo = $("#stockInfo");
-    stockInfo.empty();
-    var newStockName = $("<p>");
-    var newStockPrice = $("<p>");
-    var newStockHigh = $("<p>");
-    var newStockLow = $("<p>");
-    var newStockVol = $("<p>");
-    newStockName.text(response["Meta Data"]["2. Symbol"]);
-    stockInfo.append(newStockName);
-    var firstKey = response["Time Series (Daily)"][Object.keys(response["Time Series (Daily)"])[0]];
-    newStockPrice.text(firstKey["1. open"]);
-    searchPrice = firstKey["1. open"];
-    stockInfo.append(newStockPrice);
-    newStockHigh.text(firstKey["2. high"]);
-    stockInfo.append(newStockHigh);
-    newStockLow.text(firstKey["3. low"]);
-    stockInfo.append(newStockLow);
-    newStockVol.text(firstKey["5. volume"]);
-    stockInfo.append(newStockVol);
-});
+        url: queryURL,
+        method: "GET"
+    }).then(function (response) {
+        var infoDiv = ("<div id='stockInfo' class='card-panel blue lighten-1 col s4 white-text'>");
+        displayRow.append(infoDiv);
+        var stockInfo = $("#stockInfo");
+        stockInfo.empty();
+        var newStockName = $("<p>");
+        var newStockPrice = $("<p>");
+        var newStockHigh = $("<p>");
+        var newStockLow = $("<p>");
+        var newStockVol = $("<p>");
+        newStockName.text(response["Meta Data"]["2. Symbol"]);
+        stockInfo.append(newStockName);
+        var firstKey = response["Time Series (Daily)"][Object.keys(response["Time Series (Daily)"])[0]];
+        newStockPrice.text(firstKey["1. open"]);
+        searchPrice = firstKey["1. open"];
+        stockInfo.append(newStockPrice);
+        newStockHigh.text(firstKey["2. high"]);
+        stockInfo.append(newStockHigh);
+        newStockLow.text(firstKey["3. low"]);
+        stockInfo.append(newStockLow);
+        newStockVol.text(firstKey["5. volume"]);
+        stockInfo.append(newStockVol);
+    });
 }
 
-searchForm.on("submit", function(event){
+searchForm.on("submit", function (event) {
     event.preventDefault();
     searchTerm = searchInput.val();
-    displayRow.empty(); 
+    displayRow.empty();
     optionsDiv.empty();
-    var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";    
+    var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";
     $.ajax({
         url: symbolQueryURL,
         method: "GET"
-    }).then(function(response) {
-        var symbol ='';
+    }).then(function (response) {
+        var symbol = '';
 
         //No response from api
-        if(response.length === 0){
-           var p = $("<p>");
-           p.text("No results ...");
-           optionsDiv.append(p);
-           //Only one company was returned
-        }else if(response.length === 1){ 
-           symbol = response[0].symbol;
-           getInfo(symbol);
-           searchNYT();
-        } else{
-             //multiple companies returned            
-           for(var i = 0; i < response.length && i < 5; i++){
+        if (response.length === 0) {
+            var p = $("<p>");
+            p.text("No results ...");
+            optionsDiv.append(p);
+            //Only one company was returned
+        } else if (response.length === 1) {
+            symbol = response[0].symbol;
+            getInfo(symbol);
+            // searchNYT();
+        } else {
+            //multiple companies returned            
+            for (var i = 0; i < response.length && i < 5; i++) {
                 var newButton = $("<button class='choiceBtn btn blue'>");
                 var name = response[i].name;
                 newButton.text(name);
-                newButton.attr("value",response[i].symbol);
-                optionsDiv.append(newButton);                
+                newButton.attr("value", response[i].symbol);
+                optionsDiv.append(newButton);
             }
             choices = $(".choiceBtn");
-            choices.on("click",function(event){
+            choices.on("click", function (event) {
                 event.preventDefault();
                 symbol = $(this).val();
                 getInfo(symbol);
-                optionsDiv.empty();        
+                optionsDiv.empty();
             })
-            
-               
-            
 
-        
-       }        
-    }); 
+
+
+
+
+        }
+    });
 });
 
-searchButton.on("click", function(event){
+searchButton.on("click", function (event) {
     console.log("clicked")
     searchTerm = searchInput.val();
-    displayRow.empty(); 
+    displayRow.empty();
     optionsDiv.empty();
-    var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";    
+    var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";
     $.ajax({
         url: symbolQueryURL,
         method: "GET"
-    }).then(function(response) {
-        var symbol ='';
+    }).then(function (response) {
+        var symbol = '';
 
         //No response from api
-        if(response.length === 0){
-           var p = $("<p>");
-           p.text("No results ...");
-           optionsDiv.append(p);
-           //Only one company was returned
-        }else if(response.length === 1){ 
-           symbol = response[0].symbol;
-           getInfo(symbol);
-        } else{
+        if (response.length === 0) {
+            var p = $("<p>");
+            p.text("No results ...");
+            optionsDiv.append(p);
+            //Only one company was returned
+        } else if (response.length === 1) {
+            symbol = response[0].symbol;
+            getInfo(symbol);
+        } else {
             console.log("in the else")
-             //multiple companies returned            
-           for(var i = 0; i < response.length; i++){
-               console.log("makin buttons");
+            //multiple companies returned            
+            for (var i = 0; i < response.length; i++) {
+                console.log("makin buttons");
                 var newButton = $("<button class='choiceBtn'>");
                 var name = response[i].name;
                 newButton.text(name);
-                newButton.attr("value",response[i].symbol);
-                optionsDiv.append(newButton);       
-                       
+                newButton.attr("value", response[i].symbol);
+                optionsDiv.append(newButton);
+
             }
             choices = $(".choiceBtn");
-            choices.on("click",function(event){
+            choices.on("click", function (event) {
                 event.preventDefault();
                 symbol = $(this).val();
                 getInfo(symbol);
-                optionsDiv.empty();        
-                searchNYT();
+                optionsDiv.empty();
+                // searchNYT();
             })
             // $("#modal1").modal(open);
-       }        
-    }); 
+        }
+    });
 
 });
 // NYT News Search Code
@@ -150,13 +159,13 @@ var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key
 function getNewsQuery() {
     if (startYear !== null && endYear !== null) {
         queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=" + startYear + "0101&end_date=" + endYear + "1231&q=" + searchTerm + "&fq=news_desk:Business&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
-    
+
     }
 
     else if (startYear === null && endYear !== null) {
         queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=19000101&end_date=" + endYear + "1231&q=" + searchTerm + "&fq=news_desk:Business&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
     }
-    else if(startYear !== null && endYear === null) {
+    else if (startYear !== null && endYear === null) {
         queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=" + startYear + "0101&end_date=20201231&q=" + searchTerm + "&fq=news_desk:Business&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
     }
     else {
@@ -196,8 +205,8 @@ function updatePage(NYTData) {
             stockNewsItem.append(
                 "<strong> " +
                 "<h5> <span class='label label-primary'>" +
-                (i+1)+". " +
-                "</span>" + headline.main +"</h5>" +
+                (i + 1) + ". " +
+                "</span>" + headline.main + "</h5>" +
                 "</strong>"
             );
         }
@@ -220,13 +229,13 @@ function updatePage(NYTData) {
         var pubDate = article.pub_date;
         console.log(article.pub_date);
         if (pubDate) {
-            stockNewsItem.append("<h5>" + article.pub_date.substring(0,10) + "</h5>");
+            stockNewsItem.append("<h5>" + article.pub_date.substring(0, 10) + "</h5>");
         }
 
         // Append and log url
         var a = document.createElement("a");
-        a.setAttribute("href",article.web_url);
-        a.textContent= article.web_url;
+        a.setAttribute("href", article.web_url);
+        a.textContent = article.web_url;
         var articleUrl = "<a href='" + article.web_url + "'>" + article.web_url + "</a>";
         console.log(a);
         stockNewsItem.append(a);
@@ -234,16 +243,16 @@ function updatePage(NYTData) {
 
         // Append the article
         stockNews.append(stockNewsItem);
-    
+
 
     }
 }
-function searchNYT(){
+function searchNYT() {
     var newsQueryURL = getNewsQuery();
     $.ajax({
         url: newsQueryURL,
-        method : "GET"
-    }).then(function(response){
+        method: "GET"
+    }).then(function (response) {
         console.log(response)
         updatePage(response);
         // for(i = 0; i < articleNum; i++) {
@@ -259,13 +268,13 @@ function searchNYT(){
         //     let snippet = document.createElement("p");
         //     let snipText = response.response.docs[i].lead_paragraph;
         //     snippet.textContent = "Snippet: " + snipText;
-            
-            // div.appendChild(headline);
-            // div.appendChild(datePub);
-            // div.appendChild(author);
-            // div.appendChild(snippet);
-            // displayArticles.appendChild(div);
-        })
+
+        // div.appendChild(headline);
+        // div.appendChild(datePub);
+        // div.appendChild(author);
+        // div.appendChild(snippet);
+        // displayArticles.appendChild(div);
+    })
 }
 
 /////////////
@@ -275,49 +284,331 @@ function searchNYT(){
 var toPortButton = $("#addPortSubmit");
 var stockNumInput = $("#stockNumber");
 var stockNumForm = $("stockCount");
+var selectedStock = ''
+var selectedPrice = 0;
 
-function addtoPortfolio(){
-    let newStockCount = stockNumInput.val();
+stockNumInput.on("change", function () {
+   
+    console.log("change triggered");
+    let price = parseInt(searchPrice);
+    let quant = parseInt(stockNumInput.val());
+    total = (price * quant).toFixed(2);
+    if(isNaN(stockNumInput.val())){
+        $("#errorMessageDiv").text("Please enter a valid number.");
+   
+    }
+    else{
+        $("#totalCost").text("Total Cost: $" + total);
+    }
+})
 
-    var newStocks = [];
-    var savedStocks = JSON.parse(localStorage.getItem("stock"));
-if (savedStocks !== null) {
-newStocks = savedStocks;
-}
 
-var newStocksObj = {
-name: searchSymbol,
-price: searchPrice,
-quantity: newStockCount,
-}
-console.log(newStocksObj);
 
-newStocks.push(newStocksObj);
-// console.log(newStocks);
-var stockArr = JSON.stringify(newStocks);
-
-localStorage.setItem("stock", stockArr);
-}
-
-stockNumForm.on("submit", function(event){
+stockNumForm.on("submit", function (event) {
     event.preventDefault();
-    addtoPortfolio();
+ 
+})
+
+$('#openBuyModal').on("click", function() {
+    $('.modal').modal();
+    portfolioCash = localStorage.getItem("cash");
+    if(portfolioCash === null){
+        portfolioCash = 1000000.00;
+    }
+    $("#startingFunds").text("Cash Available: $" + portfolioCash);
+    $("#stockSelected").text(searchSymbol);
+
+
+
 })
 
 toPortButton.on("click", function (event) {
-    event.preventDefault();
-    console.log(searchSymbol);
-    console.log(searchPrice);
-    addtoPortfolio();   
+    addtoPortfolio();
 })
 
-// $('.modal').modal();
+
+function addtoPortfolio() {
+
+    if (total <= portfolioCash) {
+        portfolioCash -= total
+        console.log(portfolioCash);
+        let newStockCount = parseInt(stockNumInput.val());
+        var newStocksObj = {
+            name: searchSymbol,
+            price: searchPrice,
+            quantity: newStockCount,
+        }
+
+        var newStocks = [];
+        var savedStocks = JSON.parse(localStorage.getItem("stock"));
+        if (savedStocks !== null) {
+            newStocks = savedStocks;
+        }
+        console.log(newStocks);
+
+        
+            for (let i = 0; i <newStocks.length; i++){
+            if (searchSymbol === newStocks[i].name){
+                console.log("adding to exisiting holdings")
+                newStocks[i].quantity += newStocksObj.quantity;
+                console.log(newStocksObj)
+                console.log(newStocks);
+            
+            }
+            else{
+                console.log("adding new stock");
+                newStocks.push(newStocksObj);
+            }
+        }  
+        if (savedStocks === null) {
+            console.log("first run");
+            newStocks.push(newStocksObj);
+        }
+          
+        var stockArr = JSON.stringify(newStocks);
+        localStorage.setItem("stock", stockArr);
+        localStorage.setItem("cash", portfolioCash);
+        $("#modalBuy").modal('close');
+    } else if(isNaN(stockNumInput.val())){
+        $("#errorMessageDiv").text("Please enter a valid number.");
+   
+    } else {
+        $("#errorMessageDiv").text("Insufficient funds available. Please lower purchase quantity, or select a different security, or free up some cash.");
+    }
 
 
-/////////
-//Portfolio Values
-/////
-var portfolioStart = 1000000;
-var portfolioValue = 1000000;
-var portfolioReturn = portfolioValue/portfolioStart;
+
+
+
+}
+
+
+
+
+var portfolioDisplayDiv = $("#portfolioDisplayDiv");
+var portTotal = 0;
+
+function generatePortfolio(){  
+    var portfolioArr = JSON.parse(localStorage.getItem("stock"));
+    let newRow = $("<div class='row m-0'>");
+if (portfolioArr !== null){
+      for (i=0; i < portfolioArr.length; i++){
+          let priceToRound = 0;
+
+    if (i === 0){
+    
+    portfolioDisplayDiv.append(newRow);
+    
+    let nameDiv = $("<div class='card col s4'>");
+    let nameh4 = $("<h4>");
+    let quantityDiv = $("<div class='card col s4'>");
+    let quantityh4 = $("<h4>");
+    let valueDiv = $("<div class='card col s4'>");
+    let valueh4 = $("<h4>");
+    nameh4.text("Stock Symbol");
+    quantityh4.text("Shares Owned");
+    valueh4.text("Current Price");
+   
+    newRow.append(nameDiv, quantityDiv, valueDiv);
+    nameDiv.append(nameh4);
+    quantityDiv.append(quantityh4);
+    valueDiv.append(valueh4);
+    }
+    let subRow = $("<div class='row stockSelect'>");
+    let nameDiv = $("<div class='card col s4 name'>");
+    let nameh4 = $("<h4>");
+    let quantityDiv = $("<div class='card col s4'>");
+    let quantityh4 = $("<h4>");
+    let valueDiv = $("<div class='card col s4 price'>");
+    let valueh4 = $("<h4>");    
+    nameh4.text(portfolioArr[i].name);
+    quantityh4.text(portfolioArr[i].quantity);
+    priceToRound = parseFloat(portfolioArr[i].price);
+    let roundPrice= priceToRound.toFixed(2);
+    valueh4.text(roundPrice);    
+    newRow.append(subRow);
+    subRow.append(nameDiv, quantityDiv, valueDiv);
+    nameDiv.append(nameh4);
+    quantityDiv.append(quantityh4);
+    valueDiv.append(valueh4);
+
+    var subtotal = 0
+    subtotal = portfolioArr[i].price * portfolioArr[i].quantity;
+    portTotal += subtotal;
+    let remaining = 1000000 - portTotal;
+    let change = (((remaining+ portTotal)/1000000)-1).toFixed(2);
+    let net = remaining + portTotal - 1000000;
+
+    $("#total").text("Total Value: " + (portTotal+remaining).toFixed(2));
+    $("#change").text("Change in Value: " + change + "%");
+    $("#net").text("Net Change: " + net)
+        }
+
+
+        
+    }
+}
+
+$(document).on("click", ".stockSelect", function() {
+    $(".removable").remove();
+    let sellDiv = $("<div class=' row removable'>");
+    let updateButton = $("<button class='btn-large green' id='updateButton'>");
+    updateButton.text("Update")
+    let sellButton = $("<button class='btn-large green lighten-2 modal-trigger' data-target='modalSell' id='sellButton'>")
+    sellButton.text("Sell");
+    $(this).append(sellDiv);
+    sellDiv.append(updateButton, sellButton);
+})
+
+$(document).on("click", "#updateButton", function() {
+    let portfolioArr = JSON.parse(localStorage.getItem("stock"));
+   
+    let updateName = $(this).parent().siblings(".name").text();
+   var updatePrice = $(this).parent().siblings(".price");
+   let updateDiv = $(this)
+    let newRoundPrice =0;
+
+    let queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + updateName + "&outputsize=compact&apikey=4EOJKMRS4JOT2AEA";
+
+    $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function (response) {
+                console.log(response);
+        let firstKey = response["Time Series (Daily)"][Object.keys(response["Time Series (Daily)"])[0]];
+
+        let newPriceToRound = parseFloat(firstKey["1. open"]);
+        newRoundPrice = newPriceToRound.toFixed(2);
+                for (i=0; i<portfolioArr.length; i++){                    
+                        if (updateName === portfolioArr[i].name){
+                            console.log("updating holdings")
+                            portfolioArr[i].price = newRoundPrice;                                                
+                        }
+        
+            }
+    $("#portfolioDisplayDiv").empty();
+   generatePortfolio();
+           
+})
+})
+
+
+$(document).on("click", "#sellButton", function(event) {
+    selectedStock = $(this).parent().siblings(".name").text();
+    selectedPrice = parseFloat($(this).parent().siblings(".price").text());
+    event.preventDefault();
+    $('.modal').modal();
+    portfolioCash = localStorage.getItem("cash");
+    $("#startingFunds").text("Cash Available: $" + portfolioCash);
+    $("#saleStockSelected").text(selectedStock);
+    $('.modal').modal();
+    $("#modalSell").modal('open');
+
+    
+})
+
+var saleButton = $("#confirmSale");
+var stockSaleInput = $("#stockSellInput");
+var stockNumForm = $("stockCount");
+
+stockSaleInput.on("change", function () {
+   
+    console.log("change triggered");
+    
+    let quant = parseInt(stockSaleInput.val());
+    console.log(selectedPrice);
+
+    total = (selectedPrice * quant).toFixed(2);
+    if(isNaN(stockSaleInput.val())){
+        $("#errorMessageDiv").text("Please enter a valid number.");
+   
+    }
+    else{
+        $("#totalValue").text("Total: $" + total);
+    }
+})
+
+
+
+$("#saleCount").on("submit", function (event) {
+    event.preventDefault();
+ 
+})
+
+$('#openBuyModal').on("click", function() {
+    $('.modal').modal();
+    portfolioCash = localStorage.getItem("cash");
+    if(portfolioCash === null){
+        portfolioCash = 1000000.00;
+    }
+    $("#startingFunds").text("Cash Available: $" + portfolioCash);
+    $("#stockSelected").text(searchSymbol);
+
+
+
+})
+
+saleButton.on("click", function (event) {
+    addtoPortfolio();
+})
+
+
+function addtoPortfolio() {
+
+    if (total <= portfolioCash) {
+        portfolioCash -= total
+        console.log(portfolioCash);
+        let newStockCount = parseInt(stockNumInput.val());
+        var newStocksObj = {
+            name: searchSymbol,
+            price: searchPrice,
+            quantity: newStockCount,
+        }
+
+        var newStocks = [];
+        var savedStocks = JSON.parse(localStorage.getItem("stock"));
+        if (savedStocks !== null) {
+            newStocks = savedStocks;
+        }
+        console.log(newStocks);
+
+        
+            for (let i = 0; i <newStocks.length; i++){
+            if (searchSymbol === newStocks[i].name){
+                console.log("adding to exisiting holdings")
+                newStocks[i].quantity += newStocksObj.quantity;
+                console.log(newStocksObj)
+                console.log(newStocks);
+            
+            }
+            else{
+                console.log("adding new stock");
+                newStocks.push(newStocksObj);
+            }
+        }  
+        if (savedStocks === null) {
+            console.log("first run");
+            newStocks.push(newStocksObj);
+        }
+          
+        var stockArr = JSON.stringify(newStocks);
+        localStorage.setItem("stock", stockArr);
+        localStorage.setItem("cash", portfolioCash);
+        $("#modalBuy").modal('close');
+    } else if(isNaN(stockNumInput.val())){
+        $("#errorMessageDiv").text("Please enter a valid number.");
+   
+    } else {
+        $("#errorMessageDiv").text("Insufficient funds available. Please lower purchase quantity, or select a different security, or free up some cash.");
+    }
+
+
+
+
+
+}
+
+
+generatePortfolio();
+
 

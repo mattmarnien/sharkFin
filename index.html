@@ -30,12 +30,10 @@
         </div>
         <div class="nav-content">
             <ul class="tabs tabs-transparent">
-                <li class="tab"><a href="#test1">Research</a></li>
-
-                <li class="tab"><a class="active bigger-text" href="#test2"> Search</a></li>
+                <li class="tab"><a class="active bigger-text" href="#"> Research</a></li>
                 <li class="tab"><a class="active" href="portfolio.html"> Portfolio</a></li>
 
-<!-- 
+                <!-- 
                 <li class="tab"><a class="active" href="#test4">Cryptocurrency</a></li>
                 <li class="tab"><a class="active" href="#test4">Recent Searches</a></li> -->
 
@@ -50,14 +48,15 @@
                 <div class="row">
                     <form class="input-field col s12" id="searchForm">
                         <i class="material-icons prefix">textsms</i>
-                        <input type="text" id="autocomplete-input" class="autocomplete searchInput">
+                        <input type="text" id="autocomplete-input" class="searchInput">
                         <label for="autocomplete-input">Stock Name Here</label>
 
-                        <button class="waves-effect waves-light btn color blue" data-target="modal1"><i class="material-icons left" id="searchButton">cloud</i>Search</button>
+                        <button class="waves-effect waves-light btn color blue" data-target="modal1"><i
+                                class="material-icons left" id="searchButton">cloud</i>Search</button>
                         <div id="optionsDiv">
 
                         </div>
-                        
+
                         </button>
                     </form>
                 </div>
@@ -67,70 +66,83 @@
 
         </div>
 
-  <!-- Modal Structure -->
-  <div id="modal1" class="modal">
-    <div >
-      <h4>Modal Header</h4>
-      <p>A bunch of text</p>
-    </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-    </div>
-  </div>
 
-  <div id="modal2" class="modal">
-    <div class="modal-content">
-      <h4>Modal Header</h4>
-      <p>A bunch of text</p>
-    </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-    </div>
-  </div>
+
+
+
+
 
         <div class="row">
-            <form class="col s12" id="stockCount">
-                <div class="row">
-                    <div class="input-field col s12">
-                        <input id="stockNumber" type="stock#" class="validate" placeholder="Number of shares to Add">
-                   
-                        <button class="btn waves-effect blue lighten-2" id="addPortSubmit" type="submit" name="action">Add to Portfolio
-                            <i class="material-icons right">send</i>
-                        <span class="helper-text" data-error="Wrong, must enter a number between 0-10000"
-                            data-success="right">Thank You</span>
-                    </div>
-                </div>
-            </form>
+            <button class="btn waves-effect blue lighten-2 modal-trigger" data-target="modalBuy" id="openBuyModal"
+                type="submit" name="action">Buy
+                <i class="material-icons right">send</i>
         </div>
-    
+
+        <div id="modalBuy" class="modal">
+            <div class="modal-content">
+                <h4>Confirm Purchase</h4>
+                <h5 id="stockSelected"> </h5>
+                <p id="startingFunds"> </p>
+                <form class="col s12" id="stockCount">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="stockNumber" type="stock#" class="validate"
+                                placeholder="Number of shares to Add">
+                        </div>
+                    </div>
+                </form>
+                <div>
+                    <h3 id="totalCost">
+                        $0.00
+                    </h3>
+
+                </div>
+                <div id="remaining funds">
+
+                </div>
+                <button id="addPortSubmit" class="btn green lighten-1">
+                    Add to Portfolio
+                </button>
+                <div>
+                    <h5 id="errorMessageDiv" class="error">
+
+                    </h5>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+            </div>
+        </div>
+
+        
 
         <br>
 
 
 
 
-                <div class="col s8 ">
-                    <div class="card-panel blue ">
+        <div class="col s8 ">
+            <div class="card-panel blue ">
 
-                        <span class="white-text stockNews">I am a very simple card. I am good at containing small bits of
-                            information.
-                            I am convenient because I require little markup to use effectively. I am similar to what is
-                            called a
-                            panel in other frameworks.
-                        </span>
-                    </div>
-                </div>
-            <!-- </div>
+                <span class="white-text stockNews">I am a very simple card. I am good at containing small bits of
+                    information.
+                    I am convenient because I require little markup to use effectively. I am similar to what is
+                    called a
+                    panel in other frameworks.
+                </span>
+            </div>
+        </div>
+        <!-- </div>
         </div> -->
     </div>
 
-  
+
     <!-- Compiled and minified JavaScript -->
     <script src="materialize.min.js"></script>
     <script src="script.js"></script>
     <script>
-   
-    
+
+
     </script>
 </body>
 
