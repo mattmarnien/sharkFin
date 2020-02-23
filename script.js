@@ -284,6 +284,8 @@ function searchNYT() {
 var toPortButton = $("#addPortSubmit");
 var stockNumInput = $("#stockNumber");
 var stockNumForm = $("stockCount");
+var selectedStock = ''
+var selectedPrice = 0;
 
 stockNumInput.on("change", function () {
    
@@ -304,7 +306,7 @@ stockNumInput.on("change", function () {
 
 stockNumForm.on("submit", function (event) {
     event.preventDefault();
-    addtoPortfolio();
+ 
 })
 
 $('#openBuyModal').on("click", function() {
@@ -380,7 +382,6 @@ function addtoPortfolio() {
 
 }
 
-// $('.modal').modal();
 
 
 
@@ -478,9 +479,6 @@ $(document).on("click", "#updateButton", function() {
 
         let newPriceToRound = parseFloat(firstKey["1. open"]);
         newRoundPrice = newPriceToRound.toFixed(2);
-        // updatePrice.text(newRoundPrice);
-        // updatePrice.addClass("h4");
-        // updateDiv.empty();
                 for (i=0; i<portfolioArr.length; i++){                    
                         if (updateName === portfolioArr[i].name){
                             console.log("updating holdings")
@@ -496,17 +494,121 @@ $(document).on("click", "#updateButton", function() {
 
 
 $(document).on("click", "#sellButton", function(event) {
-    $(document).ready( function(){
+    selectedStock = $(this).parent().siblings(".name").text();
+    selectedPrice = parseFloat($(this).parent().siblings(".price").text());
     event.preventDefault();
-    let portfolioArr = JSON.parse(localStorage.getItem("stock"));
+    $('.modal').modal();
+    portfolioCash = localStorage.getItem("cash");
+    $("#startingFunds").text("Cash Available: $" + portfolioCash);
+    $("#saleStockSelected").text(selectedStock);
+    $('.modal').modal();
     $("#modalSell").modal('open');
-    })
+
     
 })
 
+var saleButton = $("#confirmSale");
+var stockSaleInput = $("#stockSellInput");
+var stockNumForm = $("stockCount");
+
+stockSaleInput.on("change", function () {
+   
+    console.log("change triggered");
+    
+    let quant = parseInt(stockSaleInput.val());
+    console.log(selectedPrice);
+
+    total = (selectedPrice * quant).toFixed(2);
+    if(isNaN(stockSaleInput.val())){
+        $("#errorMessageDiv").text("Please enter a valid number.");
+   
+    }
+    else{
+        $("#totalValue").text("Total: $" + total);
+    }
+})
+
+
+
+$("#saleCount").on("submit", function (event) {
+    event.preventDefault();
+ 
+})
+
+$('#openBuyModal').on("click", function() {
+    $('.modal').modal();
+    portfolioCash = localStorage.getItem("cash");
+    if(portfolioCash === null){
+        portfolioCash = 1000000.00;
+    }
+    $("#startingFunds").text("Cash Available: $" + portfolioCash);
+    $("#stockSelected").text(searchSymbol);
+
+
+
+})
+
+saleButton.on("click", function (event) {
+    addtoPortfolio();
+})
+
+
+function addtoPortfolio() {
+
+    if (total <= portfolioCash) {
+        portfolioCash -= total
+        console.log(portfolioCash);
+        let newStockCount = parseInt(stockNumInput.val());
+        var newStocksObj = {
+            name: searchSymbol,
+            price: searchPrice,
+            quantity: newStockCount,
+        }
+
+        var newStocks = [];
+        var savedStocks = JSON.parse(localStorage.getItem("stock"));
+        if (savedStocks !== null) {
+            newStocks = savedStocks;
+        }
+        console.log(newStocks);
+
+        
+            for (let i = 0; i <newStocks.length; i++){
+            if (searchSymbol === newStocks[i].name){
+                console.log("adding to exisiting holdings")
+                newStocks[i].quantity += newStocksObj.quantity;
+                console.log(newStocksObj)
+                console.log(newStocks);
+            
+            }
+            else{
+                console.log("adding new stock");
+                newStocks.push(newStocksObj);
+            }
+        }  
+        if (savedStocks === null) {
+            console.log("first run");
+            newStocks.push(newStocksObj);
+        }
+          
+        var stockArr = JSON.stringify(newStocks);
+        localStorage.setItem("stock", stockArr);
+        localStorage.setItem("cash", portfolioCash);
+        $("#modalBuy").modal('close');
+    } else if(isNaN(stockNumInput.val())){
+        $("#errorMessageDiv").text("Please enter a valid number.");
+   
+    } else {
+        $("#errorMessageDiv").text("Insufficient funds available. Please lower purchase quantity, or select a different security, or free up some cash.");
+    }
+
+
+
+
+
+}
+
 
 generatePortfolio();
-$(document).ready(function(){
-    $('.modal').modal();
-})
+
 

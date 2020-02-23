@@ -65,10 +65,45 @@
 
         </div> 
 
-       
+      
+
+       <div id="modalSell" class="modal">
+        <div class="modal-content">
+            <h4>Confirm Sale</h4>
+            <h5 id="saleStockSelected"> </h5>
+            <p id="startingFunds"> </p>
+            <form class="col s12" id="saleCount">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="stockSellInput" type="stock#" class="validate"
+                            placeholder="Number of shares to sell">
+                    </div>
+                </div>
+            </form>
+            <div>
+                <h3 id="totalValue">
+                    $0.00
+                </h3>
+
+            </div>
+            <div id="Newfunds">
+
+            </div>
+            <button id="confirmSale" class="btn green lighten-1">
+                Confirm Sale
+            </button>
+            <div>
+                <h5 id="errorMessageDiv" class="error">
+
+                </h5>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+        </div>
+    </div>
               
 </body>
 <script src="materialize.min.js"></script>
 <script src=script.js></script>
-<script src=portScript.js></script>
 </html>
