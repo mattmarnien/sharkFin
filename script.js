@@ -110,6 +110,7 @@ function getInfo(foundSymbol) {
 
 // function to search Financial Modeling Prep API for stock symbol 
 function search() {
+    // $(".modal").modal(); 
     searchTerm = searchInput.val();
     displayRow.empty();
     optionsDiv.empty();
@@ -138,22 +139,37 @@ function search() {
             searchNYT();
 
         } else {
-            //multiple companies returned            
+            //multiple companies returned             
             for (var i = 0; i < response.length && i < 5; i++) {
-                var newButton = $("<button class='choiceBtn btn blue'>");
+                // console.log(response)
+                var newButton = $("<button class='choiceBtn btn blue modal-close'>");
                 var name = response[i].name;
-                newButton.text(name);
+                optionsDiv.append($("<br>"));
+                newButton.text(name + " Stock Exhchange: " + response[i].stockExchange);
                 newButton.attr("value", response[i].symbol);
                 newButton.attr("data-value", response[i].name);
                 optionsDiv.append(newButton);
+                optionsDiv.append($("<br>"));
+               
             }
+            // $(".modal").modal();
+            // $("#symbolModal").modal('open');
             choices = $(".choiceBtn");
             choices.on("click", function (event) {
                 event.preventDefault();
+                optionsDiv.empty();
                 symbol = $(this).val();
                 companyName = $(this).attr("data-value");
-                getInfo(symbol);
-                optionsDiv.empty();
+                getInfo(symbol);   
+                // $("#symbolModal").modal('destroy');
+                // $("#modalHolder").append($("<div class='modal' id='symbolModal'>"));
+                // $("#symbolModal").append($("<div class-'modal-content' id='symbolModalConent'>"));
+                // $("#symbolModalContent").append("<h3 id='modalh3'>");
+                // $("#modalh3").text("Please select the correct company from the following choices.");
+                // $("#symbolModalContent").append($("<div id='optionsDiv'>"));    
+                // $("#symbolModalContent").empty();
+                // $("#symbolModalContent").append("<div id='optionsDiv'>");        
+                // $("#symbolModal").modal('destroy');
 
                 //Name of company to display on the graph
                 graphLabel = symbol;
@@ -174,12 +190,13 @@ function search() {
 // event listener to search on searchform submit
 searchForm.on("submit", function (event) {
     event.preventDefault();
+    optionsDiv.empty();
     search();
     
 });
 // event Listener to search on cearch-button click
 searchButton.on("click", function (event) {
-
+    optionsDiv.empty();
     search();
 
 });
@@ -208,6 +225,7 @@ function updatePage(NYTData) {
     // Create limit parameter for API
     var numArticles = NYTData.response.docs.length;
 
+    $("#newsDiv").empty();
     var newCard = $("<div class='card-panel blue'>");
     var newSpan = $("<span class='white-text stockNews'>");
     $("#newsDiv").append(newCard);
