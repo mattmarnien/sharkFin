@@ -16,6 +16,7 @@ var total = 0;
 var portfolioDisplayDiv = $("#portfolioDisplayDiv");
 var portTotal = 0;
 var portfolioCash = '';
+var companyName = '';
 
 queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=4EOJKMRS4JOT2AEA";
 var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
@@ -36,22 +37,25 @@ function getInfo(foundSymbol) {
         displayRow.append(infoDiv);
         var stockInfo = $("#stockInfo");
         stockInfo.empty();
+        var newCompanyName = $("<p>");
         var newStockName = $("<p>");
         var newStockPrice = $("<p>");
         var newStockHigh = $("<p>");
         var newStockLow = $("<p>");
         var newStockVol = $("<p>");
-        newStockName.text(response["Meta Data"]["2. Symbol"]);
+        newCompanyName.text(companyName);
+        stockInfo.append(newCompanyName);
+        newStockName.text("Symbol: " + response["Meta Data"]["2. Symbol"]);
         stockInfo.append(newStockName);
         var firstKey = response["Time Series (Daily)"][Object.keys(response["Time Series (Daily)"])[0]];
-        newStockPrice.text(firstKey["1. open"]);
+        newStockPrice.text("Price: " + firstKey["1. open"]);
         searchPrice = firstKey["1. open"];
         stockInfo.append(newStockPrice);
-        newStockHigh.text(firstKey["2. high"]);
+        newStockHigh.text("High: " + firstKey["2. high"]);
         stockInfo.append(newStockHigh);
-        newStockLow.text(firstKey["3. low"]);
+        newStockLow.text("Low: " + firstKey["3. low"]);
         stockInfo.append(newStockLow);
-        newStockVol.text(firstKey["5. volume"]);
+        newStockVol.text("Volume: " + firstKey["5. volume"]);
         stockInfo.append(newStockVol);
     });
 }
@@ -66,7 +70,7 @@ function search() {
         method: "GET"
     }).then(function (response) {
         var symbol = '';
-
+console.log(response);
         //No response from api
         if (response.length === 0) {
             var p = $("<p>");
@@ -75,6 +79,7 @@ function search() {
             //Only one company was returned
         } else if (response.length === 1) {
             symbol = response[0].symbol;
+            companyName = response[0].name;
             getInfo(symbol);
             // searchNYT();
         } else {
@@ -84,12 +89,14 @@ function search() {
                 var name = response[i].name;
                 newButton.text(name);
                 newButton.attr("value", response[i].symbol);
+                newButton.attr("data-value", response[i].name);
                 optionsDiv.append(newButton);
             }
             choices = $(".choiceBtn");
             choices.on("click", function (event) {
                 event.preventDefault();
                 symbol = $(this).val();
+                companyName = $(this).attr("data-value");
                 getInfo(symbol);
                 optionsDiv.empty();
             })
@@ -106,9 +113,6 @@ searchForm.on("submit", function (event) {
 searchButton.on("click", function (event) {
     search();
 });
-// NYT News Search Code
-
-
 
 function getNewsQuery() {
     if (startYear !== null && endYear !== null) {
@@ -297,19 +301,22 @@ function addtoPortfolio() {
         var savedStocks = JSON.parse(localStorage.getItem("stock"));
         if (savedStocks !== null) {
             newStocks = savedStocks;
-        }
-    
-
         
-            for (let i = 0; i <newStocks.length; i++){
-            if (searchSymbol === newStocks[i].name){
-                newStocks[i].quantity += newStocksObj.quantity;
-            }
-            else{
-                newStocks.push(newStocksObj);
-            }
-        }  
-        if (savedStocks === null) {
+        for (let i = 0; i <newStocks.length; i++){
+         if (searchSymbol === newStocks[i].name){
+             console.log("adding to existing")
+                    newStocks[i].quantity += newStocksObj.quantity;
+                    break;
+             }
+              else{
+                  console.log("adding new")
+                  newStocks.push(newStocksObj);
+                  break;
+                }
+        } }           
+         
+        else {
+            console.log("new run")
             newStocks.push(newStocksObj);
         }
         var stockArr = JSON.stringify(newStocks);
@@ -325,7 +332,8 @@ function addtoPortfolio() {
 
 
 
-
+newStockCount = 0;
+stockNumInput.val(0);
 
 }
 
@@ -366,6 +374,7 @@ if (portfolioArr !== null){
     quantityDiv.append(quantityh4);
     valueDiv.append(valueh4);
     }
+    if(portfolioArr[i].quantity !== 0){
     let subRow = $("<div class='row stockSelect'>");
     let nameDiv = $("<div class='card col s4 name'>");
     let nameh4 = $("<h4>");
@@ -383,6 +392,7 @@ if (portfolioArr !== null){
     nameDiv.append(nameh4);
     quantityDiv.append(quantityh4);
     valueDiv.append(valueh4);
+    }
 
     var subtotal = 0
     portfolioCash = parseFloat(localStorage.getItem("cash"));
@@ -485,9 +495,7 @@ $("#saleCount").on("submit", function (event) {
 saleButton.on("click", function(event){
     event.preventDefault();
     removeFromPortfolio();
-    $("#portfolioDisplayDiv").empty();
-    generatePortfolio();
-    $("#modalSell").modal('close');
+    
 })
 
 function removeFromPortfolio() {    
@@ -511,6 +519,9 @@ function removeFromPortfolio() {
         }
         stockArr = JSON.stringify(portfolioArr);
         localStorage.setItem("stock", stockArr);
+        $("#portfolioDisplayDiv").empty();
+    generatePortfolio();
+    $("#modalSell").modal('close');
     }
 }
 
