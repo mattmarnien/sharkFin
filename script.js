@@ -80,7 +80,11 @@ searchForm.on("submit", function (event) {
         } else if (response.length === 1) {
             symbol = response[0].symbol;
             getInfo(symbol);
-            // searchNYT();
+
+            //Remove previous search's articles to display only the current search's articles            
+            $(".stockNews").empty();
+            searchNYT();
+
         } else {
             //multiple companies returned            
             for (var i = 0; i < response.length && i < 5; i++) {
@@ -96,6 +100,10 @@ searchForm.on("submit", function (event) {
                 symbol = $(this).val();
                 getInfo(symbol);
                 optionsDiv.empty();
+
+                //Remove previous search's articles to display only the current search's articles
+                $(".stockNews").empty();
+                searchNYT();
             })
 
 
@@ -127,6 +135,10 @@ searchButton.on("click", function (event) {
         } else if (response.length === 1) {
             symbol = response[0].symbol;
             getInfo(symbol);
+
+            //Remove previous search's articles to display only the current search's articles
+            $(".stockNews").empty();
+            searchNYT();
         } else {
             console.log("in the else")
             //multiple companies returned            
@@ -145,7 +157,11 @@ searchButton.on("click", function (event) {
                 symbol = $(this).val();
                 getInfo(symbol);
                 optionsDiv.empty();
-                // searchNYT();
+                console.log("in searchbutton");
+                
+                //Remove previous search's articles to display only the current search's articles
+                $(".stockNews").empty();
+                searchNYT();
             })
             // $("#modal1").modal(open);
         }
@@ -233,12 +249,11 @@ function updatePage(NYTData) {
         }
 
         // Append and log url
-        var a = document.createElement("a");
-        a.setAttribute("href", article.web_url);
-        a.textContent = article.web_url;
-        var articleUrl = "<a href='" + article.web_url + "'>" + article.web_url + "</a>";
-        console.log(a);
-        stockNewsItem.append(a);
+        var articleUrl = document.createElement("a");
+        articleUrl.setAttribute("href", article.web_url);
+        articleUrl.textContent = article.web_url;
+        console.log(articleUrl);
+        stockNewsItem.append(articleUrl);
         console.log(stockNewsItem);
 
         // Append the article
@@ -248,6 +263,7 @@ function updatePage(NYTData) {
     }
 }
 function searchNYT() {
+    console.log("in searchNYT");
     var newsQueryURL = getNewsQuery();
     $.ajax({
         url: newsQueryURL,

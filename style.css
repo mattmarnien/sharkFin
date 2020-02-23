@@ -11,6 +11,11 @@
     color: white;
 }
 
+/* This is needed for the article url to show */
+.articleHeadline a {
+    color: white;
+}
+
 .error {
     color:  red;
 }
