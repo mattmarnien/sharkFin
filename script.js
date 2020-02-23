@@ -253,7 +253,7 @@ function updatePage(NYTData) {
                 "<strong> " +
                 "<h5> <span class='label label-primary'>" +
                 (i + 1) + ". " +
-                "</span> <a href=" + article.web_url + ">" + headline.main + "</a></h5>" +
+                "</span> <a href=" + article.web_url + " target='_blank'>" + headline.main + "</a></h5>" +
                 "</strong>"
             );
         }
