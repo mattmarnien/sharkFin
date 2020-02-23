@@ -11,17 +11,18 @@
 </head>
 <style>
     #canvas-div {
-        width: 400px;
-        height: 300px;
+        max-width: 400px;
+        max-height: 300px;
     }
 </style>
 <body>
     <div id="company-options">
         
     </div>
-    <div id="canvas-div">
+   <!--  <div id="canvas-div">
         <canvas id="line-chart" width="800" height="450"></canvas>
-    </div>
+    </div> -->
+    <div id="displayRow"></div>
     <script>
         function generateGraph(label,data){
             new Chart(document.getElementById("line-chart"), {
@@ -81,7 +82,7 @@
                     dayKeys = Object.keys(response["Time Series (Daily)"]);
                     console.log(dayKeys);
                     var i = 0;
-                    label = dayKeys.map(day => i++ );
+                   // label = dayKeys.map(day => i++ );
                     console.log(label);
                     var dayInfo = response["Time Series (Daily)"][dayKeys[0]];
                     console.log(dayInfo);
@@ -91,10 +92,13 @@
                         closeKeys.push(response["Time Series (Daily)"][dayKeys[i]]["4. close"]);
                     }
                     console.log(closeKeys);
-                    closeKeysInt = closeKeys.map(key => parseInt(key));
+                    //closeKeysInt = closeKeys.map(key => parseInt(key));
                     console.log(closeKeysInt);
-
-                    generateGraph(dayKeys.reverse(),closeKeysInt.reverse());
+                    var graphDiv = $("<div id='canvas-div'></div>");
+                    var canvasElement = $("<canvas id='line-chart' width='800' height='450'></canvas>");
+                    graphDiv.append(canvasElement);
+                    $("#displayRow").append(graphDiv);    
+                    generateGraph(dayKeys.reverse(),closeKeys.reverse());
 
 
             
@@ -137,6 +141,12 @@
                     var i = 0;
                     label = dayKeys.map(day => i++ );
                     closeKeysInt = closeKeys.map(key => parseInt(key));
+
+                    var graphDiv = $("<div id='canvas-div'></div>");
+                    var canvasElement = $("<canvas id='line-chart' width='800' height='450'></canvas>");
+                    graphDiv.append(canvasElement);
+                    $("#displayRow").append(graphDiv);                 
+
                     generateGraph(dayKeys.reverse(),closeKeysInt.reverse());
                 
                 });
