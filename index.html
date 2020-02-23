@@ -55,7 +55,7 @@
                         <input type="text" id="autocomplete-input" class="searchInput">
                         <label for="autocomplete-input">Stock Name Here</label>
 
-                        <button class="waves-effect waves-light btn color blue" data-target="modal1"><i
+                        <button class="waves-effect waves-light btn color blue modal-trigger" data-target="symbolModal"><i
                                 class="material-icons left" id="searchButton">cloud</i>Search</button>
                         <div id="optionsDiv">
 
@@ -74,55 +74,64 @@
         
         <div class ="row" id="buyDiv">
             
-        </div>
-
-        <div id="modalBuy" class="modal">
-            <div class="modal-content">
-                <h4>Confirm Purchase</h4>
-                <h5 id="stockSelected"> </h5>
-                <p id="startingFunds"> </p>
-                <form class="col s12" id="stockCount">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input id="stockNumber" type="stock#" class="validate"
-                                placeholder="Number of shares to Add">
-                        </div>
-                    </div>
-                </form>
-                <div>
-                    <h3 id="totalCost">
-                        $0.00
-                    </h3>
-
-                </div>
-                <div id="remaining funds">
-
-                </div>
-                <button id="addPortSubmit" class="btn green lighten-1">
-                    Add to Portfolio
-                </button>
-                <div>
-                    <h5 id="errorMessageDiv" class="error">
-
-                    </h5>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
-            </div>
-        </div>
-
-        
+        </div>        
 
         <br>
-
-
-
-
         <div class="col s2" id="newsDiv">
             
         </div>
     
+    </div>
+    <!-- Would like to add modal functionality to ticker select, but issues persist-->
+    <!-- <div class='modal' id='symbolModal'>
+        <div class='modal-content' id="symbolModalContent">
+            <h3> Please select the correct company from the following choices.</h3>
+            <div id='optionsDiv'>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+        </div>
+    </div>
+    <div id="modalHolder"> -->
+
+    </div>
+
+    <div id="modalBuy" class="modal">
+        <div class="modal-content">
+            <h4>Confirm Purchase</h4>
+            <h5 id="stockSelected"> </h5>
+            <p id="startingFunds"> </p>
+            <form class="col s12" id="stockCount">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="stockNumber" type="stock#" class="validate"
+                            placeholder="Number of shares to Add">
+                    </div>
+                </div>
+            </form>
+            <div>
+                <h3 id="totalCost">
+                    $0.00
+                </h3>
+
+            </div>
+            <div id="remaining funds">
+
+            </div>
+            <button id="addPortSubmit" class="btn green lighten-1">
+                Add to Portfolio
+            </button>
+            <div>
+                <h5 id="errorMessageDiv" class="error">
+
+                </h5>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+        </div>
     </div>
 
 
