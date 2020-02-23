@@ -432,7 +432,7 @@ if (portfolioArr !== null){
     let valueDiv = $("<div class='card col s4'>");
     let valueh4 = $("<h4>");
     nameh4.text("Stock Symbol");
-    quantityh4.text("Shares Owned");
+    quantityh4.text("Shares");
     valueh4.text("Current Price");
    
     newRow.append(nameDiv, quantityDiv, valueDiv);
@@ -474,6 +474,7 @@ if (portfolioArr !== null){
 
     $("#total").text("Total Value: " + (portTotal).toFixed(2));
     $("#change").text("Change in Value: " + change.toFixed(2) + "%");
+    $("#cash").text("Cash: $" + (portTotal-subtotal));
     portTotal = 0;
 }
 
