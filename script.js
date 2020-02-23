@@ -23,7 +23,7 @@ var companyName = '';
 queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=4EOJKMRS4JOT2AEA";
 var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
 
-//Function to create the graph
+// function to create the graph
 function generateGraph(label,data){
     new Chart(document.getElementById("line-chart"), {
         type: 'line',
@@ -47,7 +47,7 @@ function generateGraph(label,data){
     });
 }
 
-
+// function to retrieve stock info from AlphaVantage with stock symbol returned from search function
 function getInfo(foundSymbol) {
 
     searchSymbol = foundSymbol;
@@ -108,6 +108,7 @@ function getInfo(foundSymbol) {
     });
 }
 
+// function to search Financial Modeling Prep API for stock symbol 
 function search() {
     searchTerm = searchInput.val();
     displayRow.empty();
@@ -119,7 +120,6 @@ function search() {
         method: "GET"
     }).then(function (response) {
         var symbol = '';
-console.log(response);
         //No response from api
         if (response.length === 0) {
             var p = $("<p>");
@@ -163,20 +163,27 @@ console.log(response);
             })
         }
     });
+    $("#buyDiv").empty();
+    var buyDiv = $("<div class='row'>");
+    var buyButton = $("<button class='btn waves-effect blue modal-trigger' data-target='modalBuy' id='openBuyModal' type='submit' name='action'>");
+    var buyI = $("<i class='material-icons right'>");
+    buyButton.text("Buy");
+    $("#buyDiv").append(buyDiv);
+    buyDiv.append(buyButton, buyI);
 }
-
+// event listener to search on searchform submit
 searchForm.on("submit", function (event) {
     event.preventDefault();
     search();
     
 });
-
+// event Listener to search on cearch-button click
 searchButton.on("click", function (event) {
 
     search();
 
 });
-
+// function that builds the query URL for New York Times API call
 function getNewsQuery() {
     if (startYear !== null && endYear !== null) {
         queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=" + startYear + "0101&end_date=" + endYear + "1231&q=" + searchTerm + "&fq=news_desk:Business&api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
@@ -195,14 +202,16 @@ function getNewsQuery() {
     }
     return queryURL;
 }
+// function to add news results to the page
 function updatePage(NYTData) {
     // Get from the form # of results to display
     // Create limit parameter for API
     var numArticles = NYTData.response.docs.length;
 
-    // Log NYTData to console
-    console.log(NYTData);
-    console.log("-----------------------");
+    var newCard = $("<div class='card-panel blue'>");
+    var newSpan = $("<span class='white-text stockNews'>");
+    $("#newsDiv").append(newCard);
+    newCard.append(newSpan);
 
     // Loop through and build elements for defined number of articles
     for (var i = 0; i < numArticles; i++) {
@@ -222,12 +231,11 @@ function updatePage(NYTData) {
         var stockNewsItem = $("<li class='list-group-item articleHeadline'>");
 
         if (headline && headline.main) {
-            console.log(headline.main);
             stockNewsItem.append(
                 "<strong> " +
                 "<h5> <span class='label label-primary'>" +
                 (i + 1) + ". " +
-                "</span>" + headline.main + "</h5>" +
+                "</span> <a href=" + article.web_url + ">" + headline.main + "</a></h5>" +
                 "</strong>"
             );
         }
@@ -235,66 +243,40 @@ function updatePage(NYTData) {
         var byline = article.byline;
 
         if (byline && byline.original) {
-            console.log(byline.original);
             stockNewsItem.append("<h5>" + byline.original + "</h5>");
         }
 
         // Log section, and append to document if exists
         var section = article.section_name;
-        console.log(article.section_name);
         if (section) {
             stockNewsItem.append("<h5>Section: " + section + "</h5>");
         }
 
         // Log published date, and append to document if exists
         var pubDate = article.pub_date;
-        console.log(article.pub_date);
         if (pubDate) {
             stockNewsItem.append("<h5>" + article.pub_date.substring(0, 10) + "</h5>");
         }
 
         // Append and log url
-        var articleUrl = document.createElement("a");
-        articleUrl.setAttribute("href", article.web_url);
-        articleUrl.textContent = article.web_url;
-        console.log(articleUrl);
-        stockNewsItem.append(articleUrl);
-        console.log(stockNewsItem);
-
+       
+        // articleUrl.setAttribute("href", article.web_url);
+        // articleUrl.textContent = article.web_url;
+        // stockNewsItem.append(articleUrl);
         // Append the article
         stockNews.append(stockNewsItem);
 
 
     }
 }
+// function that queries NYT API for news related to stock search
 function searchNYT() {
-    console.log("in searchNYT");
     var newsQueryURL = getNewsQuery();
     $.ajax({
         url: newsQueryURL,
         method: "GET"
     }).then(function (response) {
-        console.log(response)
-        updatePage(response);
-        // for(i = 0; i < articleNum; i++) {
-        //     let div = document.createElement("div");
-        //     let headline = document.createElement("p");
-        //     headline.textContent = response.response.docs[i].headline.main;
-        //     let datePub = document.createElement("p");
-        //     let pubDate = response.response.docs[i].pub_date;
-        //     datePub.textContent = "Released: " + pubDate.substring(0, 9);
-        //     let author = document.createElement("p");
-        //     let name = response.response.docs[i].byline.original;
-        //     author.textContent = "Written: " + name;
-        //     let snippet = document.createElement("p");
-        //     let snipText = response.response.docs[i].lead_paragraph;
-        //     snippet.textContent = "Snippet: " + snipText;
-
-        // div.appendChild(headline);
-        // div.appendChild(datePub);
-        // div.appendChild(author);
-        // div.appendChild(snippet);
-        // displayArticles.appendChild(div);
+        updatePage(response);        
     })
 }
 
@@ -308,11 +290,12 @@ var stockNumForm = $("stockCount");
 var selectedStock = ''
 var selectedPrice = 0;
 
+// event listener that updates total when user input changes
 stockNumInput.on("change", function () {
    
     console.log("change triggered");
-    let price = parseInt(searchPrice);
-    let quant = parseInt(stockNumInput.val());
+    let price = parseFloat(searchPrice);
+    let quant = parseFloat(stockNumInput.val());
     total = (price * quant).toFixed(2);
     if(isNaN(stockNumInput.val())){
         $("#errorMessageDiv").text("Please enter a valid number.");
@@ -322,15 +305,14 @@ stockNumInput.on("change", function () {
         $("#totalCost").text("Total Cost: $" + total);
     }
 })
-
-
-
+// event listener stops page from refreshing when user hits enter
 stockNumForm.on("submit", function (event) {
     event.preventDefault();
  
 })
-
-$('#openBuyModal').on("click", function() {
+// event listener opens Buy Modal and sets basic information
+$(document).on("click", "#openBuyModal", function() {
+    console.log("clicked");
     $('.modal').modal();
     portfolioCash = localStorage.getItem("cash");
     if(portfolioCash === null){
@@ -338,16 +320,17 @@ $('#openBuyModal').on("click", function() {
     }
     $("#startingFunds").text("Cash Available: $" + parseFloat(portfolioCash).toFixed(2));
     $("#stockSelected").text(searchSymbol);
+    $("#modalBuy").modal('open');
 
 
 
 })
-
+// event listener on final buy button and triggers additions to portfolio
 toPortButton.on("click", function (event) {
     addtoPortfolio();
 })
 
-
+// function that collects information and stores purchases in local storage
 function addtoPortfolio() {
 
     if (total <= parseFloat(portfolioCash)) {
@@ -410,9 +393,11 @@ var stockNumForm = $("stockCount");
 var sellStock = '';
 var sellPrice = '';
 var sellQuantityAvailable = '';
-
+// function that builds
 function generatePortfolio(){  
+    var subtotal = 0
     var portfolioArr = JSON.parse(localStorage.getItem("stock"));
+    portfolioCash = parseFloat(localStorage.getItem("cash"));
     let newRow = $("<div class='row m-0'>");
 if (portfolioArr !== null){
       for (i=0; i < portfolioArr.length; i++){
@@ -457,24 +442,25 @@ if (portfolioArr !== null){
     valueDiv.append(valueh4);
     }
 
-    var subtotal = 0
-    portfolioCash = parseFloat(localStorage.getItem("cash"));
-    subtotal = portfolioArr[i].price * portfolioArr[i].quantity;
+    
+    
+    subtotal = parseFloat(portfolioArr[i].price) * portfolioArr[i].quantity;
     portTotal += subtotal;
-    portTotal += portfolioCash;
-    let change = (((portTotal)/1000000)).toFixed(2);
+   
+    // $("#net").text("Net Change: " + net)
+        
+    }
+    portTotal += parseFloat(portfolioCash);
+    let change = (portTotal-1000000)/1000000*100;
     // let net = remaining + portTotal - 1000000;
 
     $("#total").text("Total Value: " + (portTotal).toFixed(2));
-    $("#change").text("Change in Value: " + change + "%");
-    // $("#net").text("Net Change: " + net)
-        }
-
-
-        
-    }
+    $("#change").text("Change in Value: " + change.toFixed(2) + "%");
+    portTotal = 0;
 }
 
+}
+// event listener which builds new row and adds update/sell buttons in portfolio
 $(document).on("click", ".stockSelect", function() {
     $(".removable").remove();
     let sellDiv = $("<div class=' row removable'>");
@@ -485,10 +471,9 @@ $(document).on("click", ".stockSelect", function() {
     $(this).append(sellDiv);
     sellDiv.append(updateButton, sellButton);
 })
-
+// event listener for update button, updates stock price
 $(document).on("click", "#updateButton", function() {
-    let portfolioArr = JSON.parse(localStorage.getItem("stock"));
-   
+    let portfolioArr = JSON.parse(localStorage.getItem("stock"));   
     let updateName = $(this).parent().siblings(".name").text();
     let newRoundPrice =0;
 
@@ -518,9 +503,8 @@ $(document).on("click", "#updateButton", function() {
 })
 })
 
-
+// event listener for sell button, opens sell modal
 $(document).on("click", "#sellButton", function(event) {
-    // $(".removable").remove();
     sellStock = $(this).parent().siblings(".name").text(); 
     sellPrice = parseFloat($(this).parent().siblings(".price").text());    
     sellQuantityAvailable = $(this).parent().siblings(".quantity").text();    
@@ -534,7 +518,7 @@ $(document).on("click", "#sellButton", function(event) {
 
     
 })
-
+// event listener that updates total when user input changes
 stockSaleInput.on("change", function () {
     let quant = parseInt(stockSaleInput.val());
     total = (sellPrice * quant).toFixed(2);
@@ -549,18 +533,16 @@ stockSaleInput.on("change", function () {
 })
 
 
-
+// event listener prevents page refresh
 $("#saleCount").on("submit", function (event) {
     event.preventDefault();
- 
 })
-
+// event listener on sale modal sell button, triggers removal of shares of stock
 saleButton.on("click", function(event){
     event.preventDefault();
-    removeFromPortfolio();
-    
+    removeFromPortfolio();    
 })
-
+// function that removes shares of stock from protfolio
 function removeFromPortfolio() {    
     portfolioArr = JSON.parse(localStorage.getItem("stock"));
     portfolioCash = localStorage.getItem("cash");
@@ -588,7 +570,7 @@ function removeFromPortfolio() {
     }
 }
 
-
+// initial portfolio generation on page load
 generatePortfolio();
 
 
