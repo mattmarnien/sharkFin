@@ -13,16 +13,15 @@ var searchTerm = '';
 var startYear = null;
 var endYear = null;
 var total = 0;
-var graphLabel;
-/////////
-//Portfolio Values
-/////
-// var portfolioStart = 1000000;
-// var portfolioValue = 1000000;
-// var portfolioReturn = portfolioValue/portfolioStart;
-var portfolioCash = 1000000.00;
+
+var portfolioDisplayDiv = $("#portfolioDisplayDiv");
+var portTotal = 0;
+var portfolioCash = '';
+var companyName = '';
+
 
 queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=4EOJKMRS4JOT2AEA";
+var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
 
 //Function to create the graph
 function generateGraph(label,data){
@@ -63,22 +62,25 @@ function getInfo(foundSymbol) {
         displayRow.append(infoDiv);
         var stockInfo = $("#stockInfo");
         stockInfo.empty();
+        var newCompanyName = $("<p>");
         var newStockName = $("<p>");
         var newStockPrice = $("<p>");
         var newStockHigh = $("<p>");
         var newStockLow = $("<p>");
         var newStockVol = $("<p>");
-        newStockName.text(response["Meta Data"]["2. Symbol"]);
+        newCompanyName.text(companyName);
+        stockInfo.append(newCompanyName);
+        newStockName.text("Symbol: " + response["Meta Data"]["2. Symbol"]);
         stockInfo.append(newStockName);
         var firstKey = response["Time Series (Daily)"][Object.keys(response["Time Series (Daily)"])[0]];
-        newStockPrice.text(firstKey["1. open"]);
+        newStockPrice.text("Price: " + firstKey["1. open"]);
         searchPrice = firstKey["1. open"];
         stockInfo.append(newStockPrice);
-        newStockHigh.text(firstKey["2. high"]);
+        newStockHigh.text("High: " + firstKey["2. high"]);
         stockInfo.append(newStockHigh);
-        newStockLow.text(firstKey["3. low"]);
+        newStockLow.text("Low: " + firstKey["3. low"]);
         stockInfo.append(newStockLow);
-        newStockVol.text(firstKey["5. volume"]);
+        newStockVol.text("Volume: " + firstKey["5. volume"]);
         stockInfo.append(newStockVol);
 
         
@@ -106,8 +108,7 @@ function getInfo(foundSymbol) {
     });
 }
 
-searchForm.on("submit", function (event) {
-    event.preventDefault();
+function search() {
     searchTerm = searchInput.val();
     displayRow.empty();
     optionsDiv.empty();
@@ -118,7 +119,7 @@ searchForm.on("submit", function (event) {
         method: "GET"
     }).then(function (response) {
         var symbol = '';
-
+console.log(response);
         //No response from api
         if (response.length === 0) {
             var p = $("<p>");
@@ -127,6 +128,7 @@ searchForm.on("submit", function (event) {
             //Only one company was returned
         } else if (response.length === 1) {
             symbol = response[0].symbol;
+            companyName = response[0].name;
             getInfo(symbol);
 
             //Name of company to display on the graph
@@ -142,12 +144,14 @@ searchForm.on("submit", function (event) {
                 var name = response[i].name;
                 newButton.text(name);
                 newButton.attr("value", response[i].symbol);
+                newButton.attr("data-value", response[i].name);
                 optionsDiv.append(newButton);
             }
             choices = $(".choiceBtn");
             choices.on("click", function (event) {
                 event.preventDefault();
                 symbol = $(this).val();
+                companyName = $(this).attr("data-value");
                 getInfo(symbol);
                 optionsDiv.empty();
 
@@ -157,76 +161,21 @@ searchForm.on("submit", function (event) {
                 //Get nytimes articles
                 searchNYT();
             })
-
-
-
-
-
         }
     });
+}
+
+searchForm.on("submit", function (event) {
+    event.preventDefault();
+    search();
+    
 });
 
 searchButton.on("click", function (event) {
-    console.log("clicked")
-    searchTerm = searchInput.val();
-    displayRow.empty();
-    optionsDiv.empty();
-    $(".stockNews").empty();
-    var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";
-    $.ajax({
-        url: symbolQueryURL,
-        method: "GET"
-    }).then(function (response) {
-        var symbol = '';
 
-        //No response from api
-        if (response.length === 0) {
-            var p = $("<p>");
-            p.text("No results ...");
-            optionsDiv.append(p);
-            //Only one company was returned
-        } else if (response.length === 1) {
-            symbol = response[0].symbol;
-            getInfo(symbol);
-            
-            //Name of company to display on the graph
-            graphLabel = symbol;
-
-            //get nytimes articles
-            searchNYT();
-
-        } else {
-            console.log("in the else")
-            //multiple companies returned            
-            for (var i = 0; i < response.length; i++) {
-                console.log("makin buttons");
-                var newButton = $("<button class='choiceBtn'>");
-                var name = response[i].name;
-                newButton.text(name);
-                newButton.attr("value", response[i].symbol);
-                optionsDiv.append(newButton);
-
-            }
-            choices = $(".choiceBtn");
-            choices.on("click", function (event) {
-                event.preventDefault();
-                symbol = $(this).val();
-                getInfo(symbol);
-                optionsDiv.empty();
-                
-                graphLabel = symbol;
-
-                //get nytimes articles
-                searchNYT();
-            })
-            // $("#modal1").modal(open);
-        }
-    });
+    search();
 
 });
-// NYT News Search Code
-var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=gtGyME9eJStqbpLqVNHQQKExu01uGU0X";
-
 
 function getNewsQuery() {
     if (startYear !== null && endYear !== null) {
@@ -387,7 +336,7 @@ $('#openBuyModal').on("click", function() {
     if(portfolioCash === null){
         portfolioCash = 1000000.00;
     }
-    $("#startingFunds").text("Cash Available: $" + portfolioCash);
+    $("#startingFunds").text("Cash Available: $" + parseFloat(portfolioCash).toFixed(2));
     $("#stockSelected").text(searchSymbol);
 
 
@@ -401,7 +350,7 @@ toPortButton.on("click", function (event) {
 
 function addtoPortfolio() {
 
-    if (total <= portfolioCash) {
+    if (total <= parseFloat(portfolioCash)) {
         portfolioCash -= total
         console.log(portfolioCash);
         let newStockCount = parseInt(stockNumInput.val());
@@ -415,28 +364,24 @@ function addtoPortfolio() {
         var savedStocks = JSON.parse(localStorage.getItem("stock"));
         if (savedStocks !== null) {
             newStocks = savedStocks;
-        }
-        console.log(newStocks);
-
         
-            for (let i = 0; i <newStocks.length; i++){
-            if (searchSymbol === newStocks[i].name){
-                console.log("adding to exisiting holdings")
-                newStocks[i].quantity += newStocksObj.quantity;
-                console.log(newStocksObj)
-                console.log(newStocks);
-            
-            }
-            else{
-                console.log("adding new stock");
-                newStocks.push(newStocksObj);
-            }
-        }  
-        if (savedStocks === null) {
-            console.log("first run");
+        for (let i = 0; i <newStocks.length; i++){
+         if (searchSymbol === newStocks[i].name){
+             console.log("adding to existing")
+                    newStocks[i].quantity += newStocksObj.quantity;
+                    break;
+             }
+              else{
+                  console.log("adding new")
+                  newStocks.push(newStocksObj);
+                  break;
+                }
+        } }           
+         
+        else {
+            console.log("new run")
             newStocks.push(newStocksObj);
         }
-          
         var stockArr = JSON.stringify(newStocks);
         localStorage.setItem("stock", stockArr);
         localStorage.setItem("cash", portfolioCash);
@@ -450,15 +395,21 @@ function addtoPortfolio() {
 
 
 
-
+newStockCount = 0;
+stockNumInput.val(0);
 
 }
 
+/////////////
+//Portfolio Script
+///////
 
-
-
-var portfolioDisplayDiv = $("#portfolioDisplayDiv");
-var portTotal = 0;
+var saleButton = $("#confirmSale");
+var stockSaleInput = $("#stockSellInput");
+var stockNumForm = $("stockCount");
+var sellStock = '';
+var sellPrice = '';
+var sellQuantityAvailable = '';
 
 function generatePortfolio(){  
     var portfolioArr = JSON.parse(localStorage.getItem("stock"));
@@ -486,10 +437,11 @@ if (portfolioArr !== null){
     quantityDiv.append(quantityh4);
     valueDiv.append(valueh4);
     }
+    if(portfolioArr[i].quantity !== 0){
     let subRow = $("<div class='row stockSelect'>");
     let nameDiv = $("<div class='card col s4 name'>");
     let nameh4 = $("<h4>");
-    let quantityDiv = $("<div class='card col s4'>");
+    let quantityDiv = $("<div class='card col s4 quantity'>");
     let quantityh4 = $("<h4>");
     let valueDiv = $("<div class='card col s4 price'>");
     let valueh4 = $("<h4>");    
@@ -503,17 +455,19 @@ if (portfolioArr !== null){
     nameDiv.append(nameh4);
     quantityDiv.append(quantityh4);
     valueDiv.append(valueh4);
+    }
 
     var subtotal = 0
+    portfolioCash = parseFloat(localStorage.getItem("cash"));
     subtotal = portfolioArr[i].price * portfolioArr[i].quantity;
     portTotal += subtotal;
-    let remaining = 1000000 - portTotal;
-    let change = (((remaining+ portTotal)/1000000)-1).toFixed(2);
-    let net = remaining + portTotal - 1000000;
+    portTotal += portfolioCash;
+    let change = (((portTotal)/1000000)).toFixed(2);
+    // let net = remaining + portTotal - 1000000;
 
-    $("#total").text("Total Value: " + (portTotal+remaining).toFixed(2));
+    $("#total").text("Total Value: " + (portTotal).toFixed(2));
     $("#change").text("Change in Value: " + change + "%");
-    $("#net").text("Net Change: " + net)
+    // $("#net").text("Net Change: " + net)
         }
 
 
@@ -536,8 +490,6 @@ $(document).on("click", "#updateButton", function() {
     let portfolioArr = JSON.parse(localStorage.getItem("stock"));
    
     let updateName = $(this).parent().siblings(".name").text();
-   var updatePrice = $(this).parent().siblings(".price");
-   let updateDiv = $(this)
     let newRoundPrice =0;
 
     let queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + updateName + "&outputsize=compact&apikey=4EOJKMRS4JOT2AEA";
@@ -558,6 +510,8 @@ $(document).on("click", "#updateButton", function() {
                         }
         
             }
+            stockArr = JSON.stringify(portfolioArr);
+            localStorage.setItem("stock", stockArr);
     $("#portfolioDisplayDiv").empty();
    generatePortfolio();
            
@@ -566,36 +520,30 @@ $(document).on("click", "#updateButton", function() {
 
 
 $(document).on("click", "#sellButton", function(event) {
-    selectedStock = $(this).parent().siblings(".name").text();
-    selectedPrice = parseFloat($(this).parent().siblings(".price").text());
-    event.preventDefault();
-    $('.modal').modal();
-    portfolioCash = localStorage.getItem("cash");
-    $("#startingFunds").text("Cash Available: $" + portfolioCash);
-    $("#saleStockSelected").text(selectedStock);
+    // $(".removable").remove();
+    sellStock = $(this).parent().siblings(".name").text(); 
+    sellPrice = parseFloat($(this).parent().siblings(".price").text());    
+    sellQuantityAvailable = $(this).parent().siblings(".quantity").text();    
+    portfolioCash = parseFloat(localStorage.getItem("cash"));    
+    $("#startingFunds").text("Cash Available: $" + portfolioCash.toFixed(2));
+    $("#saleStockSelected").text(sellStock);
     $('.modal').modal();
     $("#modalSell").modal('open');
+  
+    
 
     
 })
 
-var saleButton = $("#confirmSale");
-var stockSaleInput = $("#stockSellInput");
-var stockNumForm = $("stockCount");
-
 stockSaleInput.on("change", function () {
-   
-    console.log("change triggered");
-    
     let quant = parseInt(stockSaleInput.val());
-    console.log(selectedPrice);
-
-    total = (selectedPrice * quant).toFixed(2);
+    total = (sellPrice * quant).toFixed(2);
     if(isNaN(stockSaleInput.val())){
         $("#errorMessageDiv").text("Please enter a valid number.");
-   
+        $("#totalValue").text("Error");   
     }
     else{
+        $("#errorMessageDiv").text("");
         $("#totalValue").text("Total: $" + total);
     }
 })
@@ -607,77 +555,37 @@ $("#saleCount").on("submit", function (event) {
  
 })
 
-$('#openBuyModal').on("click", function() {
-    $('.modal').modal();
+saleButton.on("click", function(event){
+    event.preventDefault();
+    removeFromPortfolio();
+    
+})
+
+function removeFromPortfolio() {    
+    portfolioArr = JSON.parse(localStorage.getItem("stock"));
     portfolioCash = localStorage.getItem("cash");
-    if(portfolioCash === null){
-        portfolioCash = 1000000.00;
+    let quantity = parseInt(stockSaleInput.val());
+    console.log(sellQuantityAvailable);
+    console.log(quantity);
+
+    if(sellQuantityAvailable < quantity){
+        $("#errorMessageDiv").text("Insufficient shares available.")
     }
-    $("#startingFunds").text("Cash Available: $" + portfolioCash);
-    $("#stockSelected").text(searchSymbol);
-
-
-
-})
-
-saleButton.on("click", function (event) {
-    addtoPortfolio();
-})
-
-
-function addtoPortfolio() {
-
-    if (total <= portfolioCash) {
-        portfolioCash -= total
-        console.log(portfolioCash);
-        let newStockCount = parseInt(stockNumInput.val());
-        var newStocksObj = {
-            name: searchSymbol,
-            price: searchPrice,
-            quantity: newStockCount,
-        }
-
-        var newStocks = [];
-        var savedStocks = JSON.parse(localStorage.getItem("stock"));
-        if (savedStocks !== null) {
-            newStocks = savedStocks;
-        }
-        console.log(newStocks);
-
-        
-            for (let i = 0; i <newStocks.length; i++){
-            if (searchSymbol === newStocks[i].name){
-                console.log("adding to exisiting holdings")
-                newStocks[i].quantity += newStocksObj.quantity;
-                console.log(newStocksObj)
-                console.log(newStocks);
-            
-            }
-            else{
-                console.log("adding new stock");
-                newStocks.push(newStocksObj);
-            }
-        }  
-        if (savedStocks === null) {
-            console.log("first run");
-            newStocks.push(newStocksObj);
-        }
-          
-        var stockArr = JSON.stringify(newStocks);
-        localStorage.setItem("stock", stockArr);
+    else {
+        let saleTotal = quantity * sellPrice;
+       portfolioCash = parseFloat(portfolioCash) + saleTotal;
         localStorage.setItem("cash", portfolioCash);
-        $("#modalBuy").modal('close');
-    } else if(isNaN(stockNumInput.val())){
-        $("#errorMessageDiv").text("Please enter a valid number.");
-   
-    } else {
-        $("#errorMessageDiv").text("Insufficient funds available. Please lower purchase quantity, or select a different security, or free up some cash.");
+        for (i=0 ; i<portfolioArr.length; i++){
+            if(sellStock === portfolioArr[i].name){
+                portfolioArr[i].quantity -= quantity;
+            }
+        }
+        stockArr = JSON.stringify(portfolioArr);
+        localStorage.setItem("stock", stockArr);
+        $("#portfolioDisplayDiv").empty();
+    generatePortfolio();
+    $("#modalSell").modal('close');
     }
-
-
-
-
-
 }
 
 
