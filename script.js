@@ -13,6 +13,7 @@ var searchTerm = '';
 var startYear = null;
 var endYear = null;
 var total = 0;
+var graphLabel;
 /////////
 //Portfolio Values
 /////
@@ -23,7 +24,29 @@ var portfolioCash = 1000000.00;
 
 queryURL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&apikey=4EOJKMRS4JOT2AEA";
 
-
+//Function to create the graph
+function generateGraph(label,data){
+    new Chart(document.getElementById("line-chart"), {
+        type: 'line',
+        data: {
+            labels:  label,//label.slice(0,10),
+            datasets: [{ 
+                
+                data: data,//[86,114,106,106,107,111,133,221,783,2478],//closeKeysInt.slice(0,10),
+                label: graphLabel,
+                borderColor: "#3e95cd",
+                fill: false
+            },
+            ]
+        },
+        options: {
+            title: {
+            display: true,
+            text: 'Daily Stock Closing Price'
+            }
+        }
+    });
+}
 
 
 function getInfo(foundSymbol) {
@@ -35,6 +58,7 @@ function getInfo(foundSymbol) {
         url: queryURL,
         method: "GET"
     }).then(function (response) {
+        console.log(response);
         var infoDiv = ("<div id='stockInfo' class='card-panel blue lighten-1 col s4 white-text'>");
         displayRow.append(infoDiv);
         var stockInfo = $("#stockInfo");
@@ -56,6 +80,29 @@ function getInfo(foundSymbol) {
         stockInfo.append(newStockLow);
         newStockVol.text(firstKey["5. volume"]);
         stockInfo.append(newStockVol);
+
+        
+        //Append graph div and canvas to display the graph
+        var graphCol = $("<div class='col s12 m8' id='graph-col'></div>");
+        var graphDiv = $("<div id='canvas-div'></div>");
+        var canvasElement = $("<canvas id='line-chart' width='800' height='450'></canvas>");
+        graphDiv.append(canvasElement);
+        graphCol.append(graphDiv);
+        displayRow.append(graphCol);
+        //$("#displayRow").append(graphDiv);   
+        //$("#displayGraph").append(graphDiv);
+
+        //Get the dates of the stock data, will be used for the x-axis labels of the graph
+        var dateKeys = Object.keys(response["Time Series (Daily)"]);
+        //closeKeys will hold the closing price of each day and used for the graph data
+        var closeKeys = [];
+        //loop through each day and add its closing price to closeKeys
+        for(var i = 0; i < dateKeys.length; i++){
+            closeKeys.push(response["Time Series (Daily)"][dateKeys[i]]["4. close"]);
+        }
+        //Call function to create the graph, 
+        generateGraph(dateKeys.reverse(),closeKeys.reverse());
+    
     });
 }
 
@@ -64,6 +111,7 @@ searchForm.on("submit", function (event) {
     searchTerm = searchInput.val();
     displayRow.empty();
     optionsDiv.empty();
+    $(".stockNews").empty();
     var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";
     $.ajax({
         url: symbolQueryURL,
@@ -81,8 +129,10 @@ searchForm.on("submit", function (event) {
             symbol = response[0].symbol;
             getInfo(symbol);
 
-            //Remove previous search's articles to display only the current search's articles            
-            $(".stockNews").empty();
+            //Name of company to display on the graph
+            graphLabel = symbol;
+
+            //get nytimes aricles
             searchNYT();
 
         } else {
@@ -101,8 +151,10 @@ searchForm.on("submit", function (event) {
                 getInfo(symbol);
                 optionsDiv.empty();
 
-                //Remove previous search's articles to display only the current search's articles
-                $(".stockNews").empty();
+                //Name of company to display on the graph
+                graphLabel = symbol;
+
+                //Get nytimes articles
                 searchNYT();
             })
 
@@ -119,6 +171,7 @@ searchButton.on("click", function (event) {
     searchTerm = searchInput.val();
     displayRow.empty();
     optionsDiv.empty();
+    $(".stockNews").empty();
     var symbolQueryURL = "https://financialmodelingprep.com/api/v3/search?query=" + searchTerm + "&limit=10";
     $.ajax({
         url: symbolQueryURL,
@@ -135,10 +188,13 @@ searchButton.on("click", function (event) {
         } else if (response.length === 1) {
             symbol = response[0].symbol;
             getInfo(symbol);
+            
+            //Name of company to display on the graph
+            graphLabel = symbol;
 
-            //Remove previous search's articles to display only the current search's articles
-            $(".stockNews").empty();
+            //get nytimes articles
             searchNYT();
+
         } else {
             console.log("in the else")
             //multiple companies returned            
@@ -157,10 +213,10 @@ searchButton.on("click", function (event) {
                 symbol = $(this).val();
                 getInfo(symbol);
                 optionsDiv.empty();
-                console.log("in searchbutton");
                 
-                //Remove previous search's articles to display only the current search's articles
-                $(".stockNews").empty();
+                graphLabel = symbol;
+
+                //get nytimes articles
                 searchNYT();
             })
             // $("#modal1").modal(open);

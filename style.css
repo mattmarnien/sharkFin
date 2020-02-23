@@ -6,7 +6,13 @@
 .choicebtn {
     margin: 5px;
 }
-  
+
+/*Sets the size of the graph
+#canvas-div {
+    width: 400px;
+    height: 300px;
+}
+*/
 .articleHeadline {
     color: white;
 }
