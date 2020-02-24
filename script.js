@@ -464,17 +464,15 @@ if (portfolioArr !== null){
     
     subtotal = parseFloat(portfolioArr[i].price) * portfolioArr[i].quantity;
     portTotal += subtotal;
-   
-    // $("#net").text("Net Change: " + net)
-        
+ 
     }
     portTotal += parseFloat(portfolioCash);
     let change = (portTotal-1000000)/1000000*100;
-    // let net = remaining + portTotal - 1000000;
+
 
     $("#total").text("Total Value: " + (portTotal).toFixed(2));
     $("#change").text("Change in Value: " + change.toFixed(2) + "%");
-    $("#cash").text("Cash: $" + (portTotal-subtotal));
+    $("#cash").text("Cash: $" + (portfolioCash));
     portTotal = 0;
 }
 
