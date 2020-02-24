@@ -4,11 +4,12 @@ sharkFin is a website application that allows the user to search and track stock
 
 ## Features
 
-HTML, Materialize CSS, Javascript, JQuery, ALPHA VANTAGE API, Financial Modeling Prep API, NYT API
+HTML, Materialize CSS, Charts.JS, Javascript, JQuery, ALPHA VANTAGE API, Financial Modeling Prep API, NYT API
 
-## Visuals
+## Demonstration
 
-Place GIF here...
+![](sharkFin-demo.gif)
+
 
 ## Installation
 
