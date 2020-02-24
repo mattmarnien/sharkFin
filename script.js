@@ -472,7 +472,7 @@ if (portfolioArr !== null){
 
     $("#total").text("Total Value: " + (portTotal).toFixed(2));
     $("#change").text("Change in Value: " + change.toFixed(2) + "%");
-    $("#cash").text("Cash: $" + (portfolioCash));
+    $("#cash").text("Cash: $" + (portfolioCash.toFixed(2)));
     portTotal = 0;
 }
 
